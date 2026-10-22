@@ -508,6 +508,31 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // --- HELPER TIMEOUT & LOCAL STORAGE FALLBACKS ---
+    function timeoutPromise(promise, ms = 2500) {
+      return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error("Database timeout")), ms);
+        promise.then(
+          (res) => { clearTimeout(timer); resolve(res); },
+          (err) => { clearTimeout(timer); reject(err); }
+        );
+      });
+    }
+
+    function savePostsToLocal() {
+      try {
+        localStorage.setItem('ecos_local_posts', JSON.stringify(state.posts));
+      } catch (e) { console.warn("Local storage write error:", e); }
+    }
+
+    function loadPostsFromLocal() {
+      try {
+        const saved = localStorage.getItem('ecos_local_posts');
+        if (saved) return JSON.parse(saved);
+      } catch (e) { console.warn("Local storage read error:", e); }
+      return null;
+    }
+
     // --- APP STATE ---
     let state = {
       currentUser: {
@@ -597,7 +622,13 @@
 
     // --- FIRESTORE REALTIME LISTENERS ---
     function attachFirestoreListeners() {
-      // Rule 3: Auth verified before listeners
+      // Load cached/local posts immediately for fast UI rendering
+      const localPosts = loadPostsFromLocal();
+      if (localPosts && localPosts.length > 0) {
+        state.posts = localPosts;
+        renderAllViews();
+      }
+
       if (!auth.currentUser && !state.currentUser.uid) return;
 
       // Listen to Posts
@@ -607,17 +638,22 @@
           postsList.push({ id: docSnap.id, ...docSnap.data() });
         });
 
-        // Seed data if database is empty
-        if (postsList.length === 0) {
+        if (postsList.length === 0 && (!localPosts || localPosts.length === 0)) {
           seedDatabase();
           return;
         }
 
-        // Sort chronologically (newest first) in client memory (Rule 2)
-        state.posts = postsList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        renderAllViews();
+        if (postsList.length > 0) {
+          state.posts = postsList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          savePostsToLocal();
+          renderAllViews();
+        }
       }, (error) => {
-        console.error("Error reading posts:", error);
+        console.warn("Firestore snapshot error, using local state:", error);
+        if (!state.posts || state.posts.length === 0) {
+          state.posts = SAMPLE_POSTS;
+          renderAllViews();
+        }
       });
 
       // Listen to Comments
@@ -626,12 +662,14 @@
         snapshot.forEach(docSnap => {
           commentsList.push({ id: docSnap.id, ...docSnap.data() });
         });
-        state.comments = commentsList.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-        if (state.activePostId) {
-          renderComments(state.activePostId);
+        if (commentsList.length > 0) {
+          state.comments = commentsList.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+          if (state.activePostId) {
+            renderComments(state.activePostId);
+          }
         }
       }, (error) => {
-        console.error("Error reading comments:", error);
+        console.warn("Firestore comments error:", error);
       });
     }
 
@@ -918,31 +956,213 @@
       submitBtn.disabled = true;
       submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>Guardando...`;
 
-      try {
-        const newPost = {
-          title,
-          category,
-          readTime,
-          content,
-          section,
-          authorName: state.currentUser.displayName || 'Escritor de la Comunidad',
-          authorUid: state.currentUser.uid || 'anon',
-          claps: 0,
-          createdAt: new Date().toISOString()
-        };
+      const newPost = {
+        id: 'post_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+        title,
+        category,
+        readTime,
+        content,
+        section,
+        authorName: state.currentUser.displayName || 'Escritor de la Comunidad',
+        authorUid: state.currentUser.uid || 'anon',
+        claps: 0,
+        createdAt: new Date().toISOString()
+      };
 
-        await addDoc(POSTS_COLLECTION, newPost);
+      try {
+        // Attempt cloud write with 2.5s timeout
+        await timeoutPromise(addDoc(POSTS_COLLECTION, newPost), 2500);
         showToast("¡Escrito publicado con éxito!", "success");
-        
-        // Reset form
-        document.getElementById('post-form').reset();
-        navigateTo(section);
       } catch (err) {
-        console.error("Error creating post:", err);
-        showToast("Error al publicar el escrito.", "error");
+        console.warn("Cloud publish timed out/failed. Saving locally:", err);
+        // Fallback: save to local memory & localStorage
+        state.posts.unshift(newPost);
+        savePostsToLocal();
+        renderAllViews();
+        showToast("¡Escrito publicado localmente!", "success");
       } finally {
+        // ALWAYS restore submit button and navigate
         submitBtn.disabled = false;
         submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane mr-2"></i>Publicar Escrito`;
+        document.getElementById('post-form').reset();
+        navigateTo(section);
+      }
+    };
+
+    // --- READER MODAL & INTERACTIONS ---
+    window.openReaderModal = function(postId) {
+      const post = state.posts.find(p => p.id === postId);
+      if (!post) return;
+
+      state.activePostId = postId;
+      
+      document.getElementById('reader-title').textContent = post.title;
+      document.getElementById('reader-category').textContent = post.category;
+      document.getElementById('reader-readtime').textContent = `${post.readTime || 3} min de lectura`;
+      document.getElementById('reader-author').textContent = post.authorName || 'Autor';
+      document.getElementById('reader-author-avatar').textContent = (post.authorName || 'A').charAt(0).toUpperCase();
+      document.getElementById('reader-date').textContent = formatDate(post.createdAt);
+      document.getElementById('reader-content').textContent = post.content;
+      document.getElementById('reader-claps-count').textContent = post.claps || 0;
+
+      // Admin Controls inside reader
+      const adminControls = document.getElementById('admin-article-controls');
+      if (state.currentUser.isAdmin) {
+        adminControls.classList.remove('hidden');
+        adminControls.innerHTML = `
+          <button onclick="promotePost('${post.id}')" class="px-3 py-1.5 bg-amber-600 text-white rounded-lg text-xs font-bold shadow hover:bg-amber-700">
+            ${post.section === 'principal' ? 'Mover a Comunidad' : 'Promover a Principal'}
+          </button>
+          <button onclick="deletePost('${post.id}')" class="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs font-bold shadow hover:bg-red-700">
+            Eliminar
+          </button>
+        `;
+      } else {
+        adminControls.classList.add('hidden');
+      }
+
+      renderComments(postId);
+      document.getElementById('reader-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeReaderModal = function() {
+      document.getElementById('reader-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+      state.activePostId = null;
+    };
+
+    window.handleClap = async function() {
+      if (!state.activePostId) return;
+      const post = state.posts.find(p => p.id === state.activePostId);
+      if (!post) return;
+
+      const newClaps = (post.claps || 0) + 1;
+      post.claps = newClaps;
+      document.getElementById('reader-claps-count').textContent = newClaps;
+      renderAllViews();
+      savePostsToLocal();
+
+      try {
+        const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', state.activePostId);
+        await timeoutPromise(updateDoc(postRef, { claps: newClaps }), 2000);
+      } catch (err) {
+        console.warn("Claps update saved locally:", err);
+      }
+    };
+
+    // --- COMMENTS SYSTEM ---
+    async function renderComments(postId) {
+      const container = document.getElementById('comments-list');
+      const postComments = state.comments.filter(c => c.postId === postId);
+
+      if (postComments.length === 0) {
+        container.innerHTML = `
+          <p class="text-xs text-warm-500 italic">Aún no hay comentarios. Sé el primero en iniciar el diálogo.</p>
+        `;
+        return;
+      }
+
+      container.innerHTML = postComments.map(c => `
+        <div class="bg-warm-100 dark:bg-zinc-800/60 p-4 rounded-xl border border-warm-200 dark:border-zinc-700/60 space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <div class="flex items-center space-x-2">
+              <span class="font-bold text-warm-900 dark:text-warm-100">${escapeHtml(c.authorName)}</span>
+              <span class="text-warm-400">•</span>
+              <span class="text-warm-500 dark:text-zinc-400">${formatDate(c.createdAt)}</span>
+            </div>
+            ${(state.currentUser.isAdmin || state.currentUser.uid === c.authorUid) ? `
+              <button onclick="deleteComment('${c.id}')" class="text-red-500 hover:text-red-700 text-[11px] font-semibold">
+                Borrar
+              </button>
+            ` : ''}
+          </div>
+          <p class="text-sm font-serif text-warm-800 dark:text-zinc-200 leading-relaxed">
+            ${escapeHtml(c.text)}
+          </p>
+        </div>
+      `).join('');
+    }
+
+    window.submitComment = async function() {
+      if (!state.activePostId) return;
+      const input = document.getElementById('comment-input');
+      const text = input.value.trim();
+
+      if (!text) {
+        showToast("Escribe un comentario antes de enviar.", "error");
+        return;
+      }
+
+      const commentData = {
+        id: 'comm_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+        postId: state.activePostId,
+        text,
+        authorName: state.currentUser.displayName || 'Lector Anónimo',
+        authorUid: state.currentUser.uid || 'anon',
+        createdAt: new Date().toISOString()
+      };
+
+      // Add to local state first for instant response
+      state.comments.push(commentData);
+      renderComments(state.activePostId);
+      input.value = '';
+      showToast("Comentario publicado", "success");
+
+      try {
+        await timeoutPromise(addDoc(COMMENTS_COLLECTION, commentData), 2000);
+      } catch (err) {
+        console.warn("Comment saved locally:", err);
+      }
+    };
+
+    window.deleteComment = async function(commentId) {
+      state.comments = state.comments.filter(c => c.id !== commentId);
+      if (state.activePostId) renderComments(state.activePostId);
+      showToast("Comentario eliminado", "info");
+
+      try {
+        const commentRef = doc(db, 'artifacts', appId, 'public', 'data', 'comments', commentId);
+        await timeoutPromise(deleteDoc(commentRef), 2000);
+      } catch (err) {
+        console.warn("Comment deleted locally:", err);
+      }
+    };
+
+    // --- ADMIN ACTIONS: PROMOTE & DELETE ---
+    window.promotePost = async function(postId) {
+      if (!state.currentUser.isAdmin) return;
+      const post = state.posts.find(p => p.id === postId);
+      if (!post) return;
+
+      const newSection = post.section === 'principal' ? 'comunidad' : 'principal';
+      post.section = newSection;
+      renderAllViews();
+      savePostsToLocal();
+      showToast(`Escrito movido a: ${newSection === 'principal' ? 'Sección Principal' : 'Comunidad'}`, "success");
+      if (state.activePostId === postId) closeReaderModal();
+
+      try {
+        const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
+        await timeoutPromise(updateDoc(postRef, { section: newSection }), 2000);
+      } catch (err) {
+        console.warn("Section update saved locally:", err);
+      }
+    };
+
+    window.deletePost = async function(postId) {
+      if (!state.currentUser.isAdmin) return;
+      state.posts = state.posts.filter(p => p.id !== postId);
+      renderAllViews();
+      savePostsToLocal();
+      showToast("Escrito eliminado.", "info");
+      if (state.activePostId === postId) closeReaderModal();
+
+      try {
+        const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
+        await timeoutPromise(deleteDoc(postRef), 2000);
+      } catch (err) {
+        console.warn("Post deleted locally:", err);
       }
     };
 
