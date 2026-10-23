@@ -80,12 +80,22 @@
             E
           </div>
           <div>
-            <h1 class="font-display text-xl sm:text-2xl font-bold tracking-tight text-warm-900 dark:text-warm-100">
-              Ecos y Reflexiones
-            </h1>
-            <p class="text-xs text-warm-600 dark:text-amber-500 font-serif italic hidden sm:block">
-              Un refugio para las palabras de la vida
-            </p>
+            <div class="flex items-center gap-2">
+              <h1 id="site-title" class="font-display text-xl sm:text-2xl font-bold tracking-tight text-warm-900 dark:text-warm-100">
+                Ecos y Reflexiones
+              </h1>
+              <button onclick="editSiteText('site-title')" class="admin-edit-btn hidden text-xs text-amber-600 hover:underline" title="Editar Título Principal">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+            </div>
+            <div class="flex items-center gap-2">
+              <p id="site-subtitle" class="text-xs text-warm-600 dark:text-amber-500 font-serif italic hidden sm:block">
+                Un refugio para las palabras de la vida
+              </p>
+              <button onclick="editSiteText('site-subtitle')" class="admin-edit-btn hidden text-xs text-amber-600 hover:underline" title="Editar Subtítulo Principal">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -156,23 +166,45 @@
           <span class="inline-block px-3 py-1 bg-amber-600/30 border border-amber-500/40 text-amber-300 rounded-full text-xs font-semibold tracking-wider uppercase">
             Canal Principal del Autor
           </span>
-          <h2 class="font-display text-3xl sm:text-5xl font-bold tracking-wide leading-tight">
-            Reflexiones sobre la condición humana y el paso del tiempo.
-          </h2>
-          <p class="text-warm-200 text-base sm:text-lg font-serif italic">
-            "No vivimos los días; vivimos las pausas que dejamos entre ellos."
-          </p>
+          
+          <div class="flex items-center gap-2">
+            <h2 id="hero-title" class="font-display text-3xl sm:text-5xl font-bold tracking-wide leading-tight">
+              Reflexiones sobre la condición humana y el paso del tiempo.
+            </h2>
+            <button onclick="editSiteText('hero-title')" class="admin-edit-btn hidden text-sm text-amber-400 hover:underline">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <p id="hero-subtitle" class="text-warm-200 text-base sm:text-lg font-serif italic">
+              "No vivimos los días; vivimos las pausas que dejamos entre ellos."
+            </p>
+            <button onclick="editSiteText('hero-subtitle')" class="admin-edit-btn hidden text-sm text-amber-400 hover:underline">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Articles Section Header -->
       <div class="space-y-6">
-        <div class="flex items-center justify-between border-b border-warm-200 dark:border-zinc-800 pb-3">
-          <h3 class="font-display text-2xl font-bold text-warm-900 dark:text-warm-100 flex items-center gap-2">
-            <i class="fa-solid fa-star text-amber-600 text-lg"></i>
-            Ensayos y Escritos Destacados
-          </h3>
-          <span class="text-xs font-semibold text-warm-600 dark:text-zinc-400">Página Oficial</span>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-warm-200 dark:border-zinc-800 pb-3 gap-3">
+          <div class="flex items-center gap-2">
+            <h3 id="principal-section-title" class="font-display text-2xl font-bold text-warm-900 dark:text-warm-100 flex items-center gap-2">
+              <i class="fa-solid fa-star text-amber-600 text-lg"></i>
+              Ensayos y Escritos Destacados
+            </h3>
+            <button onclick="editSiteText('principal-section-title')" class="admin-edit-btn hidden text-xs text-amber-600 hover:underline">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </div>
+
+          <!-- BOTÓN DE DESCARGA DE ESCRITOS PRINCIPALES -->
+          <button onclick="downloadPrincipalPosts()" class="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-warm-200 dark:bg-zinc-800 hover:bg-warm-300 dark:hover:bg-zinc-700 text-warm-900 dark:text-zinc-100 text-xs font-bold transition-all border border-warm-300 dark:border-zinc-700 shadow-sm">
+            <i class="fa-solid fa-file-arrow-down text-amber-600 text-sm"></i>
+            <span>Descargar Escritos (.TXT)</span>
+          </button>
         </div>
 
         <!-- Featured Grid -->
@@ -187,12 +219,23 @@
     <section id="view-comunidad" class="hidden space-y-8">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-warm-200 dark:border-zinc-800 pb-6">
         <div>
-          <h2 class="font-display text-3xl font-bold text-warm-900 dark:text-warm-100">
-            Voces de la Comunidad
-          </h2>
-          <p class="text-sm text-warm-600 dark:text-zinc-400 mt-1">
-            Espacio abierto donde lectores y autores comparten sus propias visiones del mundo.
-          </p>
+          <div class="flex items-center gap-2">
+            <h2 id="community-title" class="font-display text-3xl font-bold text-warm-900 dark:text-warm-100">
+              Voces de la Comunidad
+            </h2>
+            <button onclick="editSiteText('community-title')" class="admin-edit-btn hidden text-xs text-amber-600 hover:underline">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2 mt-1">
+            <p id="community-subtitle" class="text-sm text-warm-600 dark:text-zinc-400">
+              Espacio abierto donde lectores y autores comparten sus propias visiones del mundo.
+            </p>
+            <button onclick="editSiteText('community-subtitle')" class="admin-edit-btn hidden text-xs text-amber-600 hover:underline">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </div>
         </div>
 
         <!-- Category Filters -->
@@ -240,13 +283,17 @@
               <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-2">
                 Categoría *
               </label>
-              <select id="post-category" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-warm-600 dark:focus:ring-amber-500">
+              <select id="post-category" onchange="handleCategoryChange(event)" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-warm-600 dark:focus:ring-amber-500">
                 <option value="Reflexiones">Reflexiones</option>
                 <option value="Filosofía">Filosofía</option>
                 <option value="Historias">Historias</option>
                 <option value="Poesía">Poesía</option>
                 <option value="Vida">Vida</option>
+                <option value="NEW_CUSTOM">+ Otra categoría...</option>
               </select>
+              
+              <!-- Campo dinámico para escribir categoría propia -->
+              <input type="text" id="custom-category-input" placeholder="Escribe el tema..." class="hidden mt-2 w-full px-3 py-2 rounded-xl border border-amber-300 dark:border-amber-700 bg-white dark:bg-zinc-800 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
             </div>
 
             <div>
@@ -329,7 +376,7 @@
           <i class="fa-solid fa-key text-amber-600"></i> Acceso Propietario / Código de Administrador
         </h3>
         <p class="text-xs text-warm-700 dark:text-zinc-400 mt-1 mb-4">
-          Introduce tu código maestro para activar los privilegios de edición, moderación y publicación principal.
+          Introduce tu código maestro para activar los privilegios de edición, moderación y edición de títulos de la web.
         </p>
 
         <div class="flex gap-2">
@@ -338,7 +385,6 @@
             Desbloquear Admin
           </button>
         </div>
-        <span class="text-[11px] text-warm-500 dark:text-zinc-500 mt-2 block italic">
       </div>
 
       <!-- Quick Auth / Custom Username Form -->
@@ -347,9 +393,17 @@
         
         <div class="space-y-3">
           <input type="text" id="custom-username-input" placeholder="Tu nombre o firma literaria..." class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-warm-600">
-          <button onclick="setCustomUser()" class="w-full py-2.5 rounded-xl bg-warm-800 dark:bg-zinc-700 hover:bg-warm-900 text-white font-bold text-sm shadow">
-            Guardar Nombre
-          </button>
+          
+          <div class="flex gap-3">
+            <button onclick="setCustomUser()" class="flex-1 py-2.5 rounded-xl bg-warm-800 dark:bg-zinc-700 hover:bg-warm-900 text-white font-bold text-sm shadow">
+              Guardar Nombre
+            </button>
+            
+            <!-- BOTÓN PARA PONER EL NOMBRE PREDETERMINADO "ANÓNIMO" -->
+            <button onclick="setAnonymousUser()" class="px-4 py-2.5 rounded-xl bg-warm-200 dark:bg-zinc-800 hover:bg-warm-300 text-warm-800 dark:text-zinc-300 font-bold text-sm border border-warm-300 dark:border-zinc-700">
+              Poner "Anónimo"
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -357,12 +411,12 @@
   </main>
 
 
-  <!-- MODAL: ARTICLE READER OVERLAY -->
-  <div id="post-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-zinc-950/75 backdrop-blur-sm flex justify-center p-2 sm:p-4 md:p-6" onclick="handleModalBackdropClick(event)">
-    <div class="relative w-full max-w-3xl bg-warm-50 dark:bg-zinc-900 my-auto rounded-2xl border border-warm-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+  <!-- MODAL: ARTICLE READER OVERLAY (DESPLAZAMIENTO LIBRE CORREGIDO) -->
+  <div id="post-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-zinc-950/75 backdrop-blur-sm p-3 sm:p-6 flex items-start justify-center" onclick="handleModalBackdropClick(event)">
+    <div class="relative w-full max-w-3xl bg-warm-50 dark:bg-zinc-900 my-8 rounded-2xl border border-warm-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col">
       
       <!-- Top Bar -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-warm-200 dark:border-zinc-800 bg-warm-100/90 dark:bg-zinc-900/90 backdrop-blur-md">
+      <div class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-warm-200 dark:border-zinc-800 bg-warm-50/95 dark:bg-zinc-900/95 backdrop-blur-md">
         <div class="flex items-center space-x-2 text-xs font-semibold text-warm-600 dark:text-amber-500">
           <span id="modal-category" class="px-2.5 py-1 bg-warm-200 dark:bg-zinc-800 rounded-full uppercase tracking-wider">Reflexiones</span>
           <span>•</span>
@@ -374,8 +428,8 @@
         </button>
       </div>
 
-      <!-- Modal Body (Scrollable) -->
-      <div class="p-6 sm:p-10 overflow-y-auto space-y-8">
+      <!-- Modal Body -->
+      <div class="p-6 sm:p-10 space-y-8">
         
         <!-- Header -->
         <div class="space-y-4 text-left border-b border-warm-200 dark:border-zinc-800 pb-6">
@@ -448,8 +502,8 @@
   <!-- FOOTER -->
   <footer class="mt-auto border-t border-warm-200 dark:border-zinc-800 bg-warm-50 dark:bg-zinc-900 py-8 transition-colors">
     <div class="max-w-6xl mx-auto px-4 text-center space-y-2">
-      <p class="font-display font-semibold text-warm-900 dark:text-warm-100">Ecos y Reflexiones</p>
-      <p class="text-xs text-warm-600 dark:text-zinc-400 font-serif">Un espacio personal y colectivo para pensar la vida a través de las letras.</p>
+      <p id="footer-title" class="font-display font-semibold text-warm-900 dark:text-warm-100">Ecos y Reflexiones</p>
+      <p id="footer-subtitle" class="text-xs text-warm-600 dark:text-zinc-400 font-serif">Un espacio personal y colectivo para pensar la vida a través de las letras.</p>
       <p class="text-[11px] text-warm-400 dark:text-zinc-600 pt-2">© 2026 Ecos y Reflexiones. Todos los derechos reservados.</p>
     </div>
   </footer>
@@ -513,7 +567,7 @@
       }
     ];
 
-    const CATEGORIES = ["Todos", "Reflexiones", "Filosofía", "Historias", "Poesía", "Vida"];
+    let CATEGORIES = ["Todos", "Reflexiones", "Filosofía", "Historias", "Poesía", "Vida"];
 
     // --- APPLICATION STATE ---
     let state = {
@@ -522,10 +576,11 @@
       searchQuery: '',
       darkMode: localStorage.getItem('ecos_theme') === 'dark',
       currentUser: {
-        name: localStorage.getItem('ecos_username') || 'Invitado',
+        name: localStorage.getItem('ecos_username') || 'Anónimo',
         isAdmin: localStorage.getItem('ecos_is_admin') === 'true',
         uid: null
       },
+      customTitles: JSON.parse(localStorage.getItem('ecos_titles') || '{}'),
       posts: [],
       comments: [],
       activePostId: null
@@ -550,6 +605,14 @@
             { id: 'c1', postId: 'seed-1', authorName: 'Elena V.', text: 'Hermosa reflexión. A veces olvidamos respirar.', createdAt: new Date().toISOString() }
           ];
         }
+
+        // Cargar categorías guardadas dinámicas
+        state.posts.forEach(p => {
+          if (p.category && !CATEGORIES.includes(p.category)) {
+            CATEGORIES.push(p.category);
+          }
+        });
+
       } catch (e) {
         console.warn("LocalStorage parse error, using defaults:", e);
         state.posts = [...SEED_POSTS];
@@ -562,6 +625,7 @@
         localStorage.setItem('ecos_comments', JSON.stringify(state.comments));
         localStorage.setItem('ecos_is_admin', state.currentUser.isAdmin);
         localStorage.setItem('ecos_username', state.currentUser.name);
+        localStorage.setItem('ecos_titles', JSON.stringify(state.customTitles));
       } catch (e) {
         console.warn("LocalStorage save error:", e);
       }
@@ -588,7 +652,6 @@
           if (user) state.currentUser.uid = user.uid;
         });
 
-        // Listen for remote updates
         const postsCol = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
         onSnapshot(postsCol, (snapshot) => {
           if (!snapshot.empty) {
@@ -618,6 +681,12 @@
         document.getElementById('theme-icon').className = 'fa-solid fa-moon text-lg text-warm-700';
       }
 
+      // Aplica títulos personalizados
+      Object.keys(state.customTitles).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = state.customTitles[id];
+      });
+
       // Tab visibility
       ['principal', 'comunidad', 'escribir', 'perfil'].forEach(tab => {
         const viewEl = document.getElementById(`view-${tab}`);
@@ -646,23 +715,27 @@
       const adminPicker = document.getElementById('admin-section-picker');
       const logoutBtn = document.getElementById('logout-container');
 
-      const initial = (state.currentUser.name || '?').charAt(0).toUpperCase();
+      const initial = (state.currentUser.name || 'A').charAt(0).toUpperCase();
       userAvatar.textContent = initial;
       userAvatarLarge.textContent = initial;
       userName.textContent = state.currentUser.name;
       profileName.textContent = state.currentUser.name;
 
+      const editBtns = document.querySelectorAll('.admin-edit-btn');
+
       if (state.currentUser.isAdmin) {
         adminBadge.classList.remove('hidden');
         adminPicker.classList.remove('hidden');
         logoutBtn.classList.remove('hidden');
+        editBtns.forEach(b => b.classList.remove('hidden'));
         rolePill.className = "mt-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-600 text-white shadow";
         rolePill.textContent = "Rol: Administrador Propietario";
-        roleDesc.textContent = "Control total de publicaciones y moderación";
+        roleDesc.textContent = "Control total de publicaciones, textos de la web y moderación";
       } else {
         adminBadge.classList.add('hidden');
         adminPicker.classList.add('hidden');
         logoutBtn.classList.add('hidden');
+        editBtns.forEach(b => b.classList.add('hidden'));
         rolePill.className = "mt-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-warm-200 dark:bg-zinc-800 text-warm-800 dark:text-zinc-300";
         rolePill.textContent = "Rol: Miembro de la Comunidad";
         roleDesc.textContent = "Lector y autor comunitario";
@@ -874,7 +947,7 @@
       `).join('');
     }
 
-    // --- INTERACTIVE HANDLERS (EXPLICITLY ATTACHED TO WINDOW) ---
+    // --- INTERACTIVE HANDLERS ---
 
     window.switchTab = function(tabName) {
       state.activeTab = tabName;
@@ -896,6 +969,58 @@
     window.onSearchInput = function(e) {
       state.searchQuery = e.target.value;
       renderCommunityGrid();
+    };
+
+    // FUNCIÓN PARA DESCARGAR ESCRITOS PRINCIPALES
+    window.downloadPrincipalPosts = function() {
+      const principalPosts = state.posts.filter(p => p.section === 'principal');
+
+      if (principalPosts.length === 0) {
+        showToast("No hay escritos principales para descargar.", "error");
+        return;
+      }
+
+      let content = "=========================================\n";
+      content += "    ECOS Y REFLEXIONES - CANAL OFICIAL    \n";
+      content += "=========================================\n\n";
+
+      principalPosts.forEach((p, idx) => {
+        content += `[${idx + 1}] ${p.title.toUpperCase()}\n`;
+        content += `Autor: ${p.authorName || 'Administrador'} | Categoría: ${p.category} | Fecha: ${formatDate(p.createdAt)}\n`;
+        content += "-----------------------------------------\n";
+        content += `${p.content}\n\n`;
+        content += "=========================================\n\n";
+      });
+
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `escritos_principales_${new Date().toISOString().slice(0, 10)}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showToast("Descargando escritos principales...", "success");
+    };
+
+    // EDICIÓN DINÁMICA DE TEXTOS/TÍTULOS WEB
+    window.editSiteText = function(elementId) {
+      if (!state.currentUser.isAdmin) return;
+
+      const element = document.getElementById(elementId);
+      if (!element) return;
+
+      const currentVal = element.textContent.trim();
+      const newVal = prompt("Escribe el nuevo texto para este apartado:", currentVal);
+
+      if (newVal !== null && newVal.trim() !== '') {
+        element.textContent = newVal.trim();
+        state.customTitles[elementId] = newVal.trim();
+        saveStateToLocal();
+        showToast("Texto actualizado correctamente.", "success");
+      }
     };
 
     window.loginAdminWithCode = function() {
@@ -926,6 +1051,13 @@
       renderApp();
     };
 
+    window.setAnonymousUser = function() {
+      state.currentUser.name = 'Anónimo';
+      saveStateToLocal();
+      showToast('Firma configurada como "Anónimo"', "info");
+      renderApp();
+    };
+
     window.logout = function() {
       state.currentUser.isAdmin = false;
       saveStateToLocal();
@@ -933,14 +1065,38 @@
       renderApp();
     };
 
+    // CATEGORÍAS PERSONALIZADAS EN EL FORMULARIO
+    window.handleCategoryChange = function(e) {
+      const customInput = document.getElementById('custom-category-input');
+      if (e.target.value === 'NEW_CUSTOM') {
+        customInput.classList.remove('hidden');
+        customInput.focus();
+      } else {
+        customInput.classList.add('hidden');
+      }
+    };
+
     window.submitNewPost = function(e) {
       e.preventDefault();
 
       const title = document.getElementById('post-title').value.trim();
-      const category = document.getElementById('post-category').value;
+      const categorySelect = document.getElementById('post-category').value;
+      const customCategory = document.getElementById('custom-category-input').value.trim();
       const authorInput = document.getElementById('post-author').value.trim();
       const readTime = parseInt(document.getElementById('post-readtime').value) || 3;
       const content = document.getElementById('post-content').value.trim();
+
+      let category = categorySelect;
+      if (categorySelect === 'NEW_CUSTOM') {
+        if (!customCategory) {
+          showToast("Por favor, escribe la categoría personalizada.", "error");
+          return;
+        }
+        category = customCategory;
+        if (!CATEGORIES.includes(category)) {
+          CATEGORIES.push(category);
+        }
+      }
 
       let section = 'comunidad';
       if (state.currentUser.isAdmin) {
@@ -953,7 +1109,7 @@
         return;
       }
 
-      const authorName = authorInput || state.currentUser.name || 'Escritor de la Comunidad';
+      const authorName = authorInput || state.currentUser.name || 'Anónimo';
 
       const newPost = {
         id: 'post-' + Date.now(),
@@ -967,19 +1123,17 @@
         createdAt: new Date().toISOString()
       };
 
-      // Add to state and LocalStorage
       state.posts.unshift(newPost);
       saveStateToLocal();
 
-      // Optional sync to Firestore if available
       if (db) {
         try {
           addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), newPost).catch(() => {});
         } catch (e) {}
       }
 
-      // Reset Form & Switch View
       document.getElementById('post-form').reset();
+      document.getElementById('custom-category-input').classList.add('hidden');
       showToast("¡Escrito publicado correctamente!", "success");
       window.switchTab(section);
     };
@@ -988,12 +1142,10 @@
       state.activePostId = postId;
       renderModalContent();
       document.getElementById('post-modal').classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
     };
 
     window.closePostModal = function() {
       document.getElementById('post-modal').classList.add('hidden');
-      document.body.style.overflow = '';
       state.activePostId = null;
     };
 
