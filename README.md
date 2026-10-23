@@ -338,7 +338,7 @@
             Desbloquear Admin
           </button>
         </div>
-        <span class="text-[11px] text-warm-500 dark:text-zinc-500 mt-2 block italic">Pista de prueba: ingresa el código <b>admin123</b></span>
+        <span class="text-[11px] text-warm-500 dark:text-zinc-500 mt-2 block italic">
       </div>
 
       <!-- Quick Auth / Custom Username Form -->
@@ -902,7 +902,7 @@
       const input = document.getElementById('admin-key-input');
       const val = input.value.trim();
 
-      if (val === 'admin123' || val.toLowerCase() === 'admin') {
+      if (val === 'SarieroGuillem2005' || val.toLowerCase() === 'admin') {
         state.currentUser.isAdmin = true;
         state.currentUser.name = state.currentUser.name !== 'Invitado' ? state.currentUser.name : 'Administrador';
         input.value = '';
