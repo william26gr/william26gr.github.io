@@ -80,7 +80,6 @@
             <div id="site-logo-icon" onclick="switchTab('principal')" class="w-10 h-10 rounded-full bg-warm-700 text-warm-50 dark:bg-amber-600 flex items-center justify-center font-display font-bold text-xl shadow-md cursor-pointer">
               E
             </div>
-            <!-- Botón para editar la letra del logo -->
             <button onclick="editLogoIcon()" class="admin-edit-btn hidden absolute -bottom-1 -right-1 w-5 h-5 bg-amber-600 text-white text-[10px] rounded-full flex items-center justify-center shadow" title="Cambiar Inicial Logo">
               <i class="fa-solid fa-pen"></i>
             </button>
@@ -237,7 +236,6 @@
           </div>
         </div>
 
-        <!-- Category Filters -->
         <div class="flex flex-wrap items-center gap-2" id="category-filters"></div>
       </div>
 
@@ -458,10 +456,54 @@
     </div>
   </div>
 
+
+  <!-- MODAL: EDIT POST (NUEVA FUNCIÓN ADMIN) -->
+  <div id="edit-post-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-zinc-950/80 backdrop-blur-sm p-3 sm:p-6 flex items-start justify-center">
+    <div class="relative w-full max-w-2xl bg-warm-50 dark:bg-zinc-900 my-8 rounded-2xl border border-amber-500/40 shadow-2xl p-6 sm:p-8 space-y-6">
+      <div class="flex items-center justify-between border-b border-warm-200 dark:border-zinc-800 pb-4">
+        <h3 class="font-display text-xl font-bold text-amber-700 dark:text-amber-400 flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square"></i> Editar Escrito Publicado
+        </h3>
+        <button onclick="closeEditPostModal()" class="text-warm-500 hover:text-warm-800 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-1">Título</label>
+          <input type="text" id="edit-post-title" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-1">Categoría</label>
+            <input type="text" id="edit-post-category" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-1">Lectura (min)</label>
+            <input type="number" id="edit-post-readtime" min="1" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-1">Contenido</label>
+          <textarea id="edit-post-content" rows="8" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-serif text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-4 border-t border-warm-200 dark:border-zinc-800">
+        <button onclick="closeEditPostModal()" class="px-4 py-2 rounded-xl border border-warm-300 text-xs font-semibold">Cancelar</button>
+        <button onclick="savePostEdit()" class="px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
 
-  <!-- FOOTER EDITABLE -->
+  <!-- FOOTER -->
   <footer class="mt-auto border-t border-warm-200 dark:border-zinc-800 bg-warm-50 dark:bg-zinc-900 py-8 transition-colors">
     <div class="max-w-6xl mx-auto px-4 text-center space-y-2">
       <div class="flex items-center justify-center gap-2">
@@ -536,7 +578,8 @@
       customTitles: JSON.parse(localStorage.getItem('ecos_titles') || '{}'),
       posts: [],
       comments: [],
-      activePostId: null
+      activePostId: null,
+      editingPostId: null
     };
 
     function loadSavedState() {
@@ -855,7 +898,10 @@
       if (state.currentUser.isAdmin) {
         adminActions.classList.remove('hidden');
         adminActions.innerHTML = `
-          <button onclick="promotePost('${post.id}')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold shadow">
+          <button onclick="openEditPostModal('${post.id}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold shadow">
+            Editar Escrito
+          </button>
+          <button onclick="promotePost('${post.id}')" class="px-3 py-1.5 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-xs font-bold shadow">
             ${post.section === 'principal' ? 'Mover a Comunidad' : 'Promover a Principal'}
           </button>
           <button onclick="deletePost('${post.id}')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold shadow">
@@ -937,6 +983,64 @@
       saveStateToLocal();
       renderApp();
       showToast(`Categoría "${cat}" eliminada`, "info");
+    };
+
+    window.openEditPostModal = function(postId) {
+      const post = state.posts.find(p => p.id === postId);
+      if (!post) return;
+
+      state.editingPostId = postId;
+      document.getElementById('edit-post-title').value = post.title;
+      document.getElementById('edit-post-category').value = post.category;
+      document.getElementById('edit-post-readtime').value = post.readTime || 3;
+      document.getElementById('edit-post-content').value = post.content;
+
+      document.getElementById('edit-post-modal').classList.remove('hidden');
+    };
+
+    window.closeEditPostModal = function() {
+      document.getElementById('edit-post-modal').classList.add('hidden');
+      state.editingPostId = null;
+    };
+
+    window.savePostEdit = function() {
+      if (!state.editingPostId) return;
+
+      const post = state.posts.find(p => p.id === state.editingPostId);
+      if (!post) return;
+
+      const title = document.getElementById('edit-post-title').value.trim();
+      const category = document.getElementById('edit-post-category').value.trim();
+      const readTime = parseInt(document.getElementById('edit-post-readtime').value) || 3;
+      const content = document.getElementById('edit-post-content').value.trim();
+
+      if (!title || !content) {
+        showToast("Rellena el título y el contenido.", "error");
+        return;
+      }
+
+      post.title = title;
+      post.category = category;
+      post.readTime = readTime;
+      post.content = content;
+
+      if (category && !CATEGORIES.includes(category)) {
+        CATEGORIES.push(category);
+      }
+
+      saveStateToLocal();
+
+      if (db) {
+        try {
+          updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', post.id), {
+            title, category, readTime, content
+          }).catch(() => {});
+        } catch (e) {}
+      }
+
+      closeEditPostModal();
+      renderApp();
+      showToast("¡Escrito actualizado!", "success");
     };
 
     window.onSearchInput = function(e) {
