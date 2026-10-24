@@ -1452,4 +1452,45 @@
       const toast = document.createElement('div');
       let bg = "bg-warm-900 text-white";
       if (type === "success") bg = "bg-emerald-700 text-white";
-      if (type === "error") bg =
+      if (type === "error") bg = "bg-rose-700 text-white";
+
+      toast.className = `${bg} px-4 py-3 rounded-xl shadow-2xl text-xs font-semibold flex items-center space-x-2 transition-all transform translate-y-2 opacity-0 pointer-events-auto`;
+      toast.innerHTML = `<span>${escapeHtml(msg)}</span>`;
+
+      container.appendChild(toast);
+
+      setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[m]));
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && state.activePostId) {
+        window.closePostModal();
+      }
+    });
+
+    loadSavedState();
+    renderApp();
+  </script>
+</body>
+</html>
