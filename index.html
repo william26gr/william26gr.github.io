@@ -538,34 +538,30 @@
   </div>
 
 
-  <!-- BARRA DE AUDIO FLOTANTE COMPACTA (CARGA RÁPIDA) -->
-  <div id="floating-audio-bar" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden bg-zinc-900/95 backdrop-blur-md text-white rounded-full shadow-2xl px-5 py-2.5 border border-amber-500/40 flex items-center space-x-4 transition-all duration-300">
+  <!-- REPRODUCTOR COMPACTO DE MÚSICA DE AMBIENTE -->
+  <div id="floating-audio-bar" class="fixed bottom-5 right-5 z-50 hidden bg-zinc-900/95 text-white rounded-2xl shadow-2xl p-3 border border-amber-500/50 max-w-xs transition-all duration-300">
+    <div class="flex items-center justify-between mb-2 space-x-4">
+      <div class="flex items-center space-x-2 text-xs font-bold text-amber-400">
+        <div class="flex items-end space-x-0.5 h-3">
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+        </div>
+        <span>Música de ambiente</span>
+      </div>
+      <button onclick="closeFloatingPlayer()" class="w-5 h-5 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white text-xs">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
     
-    <!-- Animación de onda sonora -->
-    <div class="flex items-end space-x-1 h-4">
-      <div class="eq-bar"></div>
-      <div class="eq-bar"></div>
-      <div class="eq-bar"></div>
-      <div class="eq-bar"></div>
+    <!-- IFRAME DE TAMAÑO COMPACTO QUE PERMITE REPRODUCCIÓN AUTO Y MANUAL -->
+    <div class="w-60 h-32 rounded-lg overflow-hidden bg-black">
+      <iframe id="floating-iframe" class="w-full h-full" src="" frameborder="0" allow="autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
-
-    <div class="flex items-center space-x-2 text-xs font-bold text-amber-400">
-      <i class="fa-solid fa-music"></i>
-      <span>Música de ambiente activa</span>
-    </div>
-
-    <!-- Contenedor invisible para reproducción directa e instantánea -->
-    <div class="w-1 h-1 overflow-hidden opacity-0 pointer-events-none">
-      <iframe id="floating-iframe" class="w-1 h-1" src="" allow="autoplay"></iframe>
-    </div>
-
-    <button onclick="closeFloatingPlayer()" class="w-6 h-6 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center text-zinc-300 hover:text-white text-xs transition-colors" title="Detener música">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
   </div>
 
 
-  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+  <div id="toast-container" class="fixed bottom-5 left-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
 
   <!-- FOOTER -->
@@ -1024,8 +1020,8 @@
       `).join('');
     }
 
-    // --- MODO AUDIO ULTRA RÁPIDO (Carga inmediata) ---
-    function getYoutubeAudioEmbedUrl(url) {
+    // --- REPRODUCTOR COMPACTO DE YOUTUBE ---
+    function getYoutubeEmbedUrl(url) {
       if (!url) return '';
       let videoId = '';
       if (url.includes('v=')) {
@@ -1033,15 +1029,14 @@
       } else if (url.includes('youtu.be/')) {
         videoId = url.split('youtu.be/')[1].split('?')[0];
       }
-      // Parámetros ligeros para optimizar velocidad y ocultar elementos innecesarios
-      return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&playsinline=1` : '';
+      return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1` : '';
     }
 
     window.playSongForActivePost = function() {
       const post = state.posts.find(p => p.id === state.activePostId);
       if (!post || !post.songUrl) return;
 
-      const embedUrl = getYoutubeAudioEmbedUrl(post.songUrl);
+      const embedUrl = getYoutubeEmbedUrl(post.songUrl);
       if (!embedUrl) {
         showToast("Enlace de canción no válido.", "error");
         return;
@@ -1051,7 +1046,7 @@
       iframe.src = embedUrl;
 
       document.getElementById('floating-audio-bar').classList.remove('hidden');
-      showToast("Reproduciendo audio de ambiente...", "success");
+      showToast("Reproductor activado. Presiona Play si no suena automáticamente.", "info");
     };
 
     window.closeFloatingPlayer = function() {
