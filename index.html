@@ -266,4 +266,1204 @@
             <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-2">
               Título del Escrito *
             </label>
-            <input type="text" id="post-title" required placeholder="Ej. La quietud de las primeras horas" class="w-full px-4 py-3 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-base font-serif focus:outline-none focus:ring-2 focus:ring-warm-60
+            <input type="text" id="post-title" required placeholder="Ej. La quietud de las primeras horas" class="w-full px-4 py-3 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-base font-serif focus:outline-none focus:ring-2 focus:ring-warm-600 dark:focus:ring-amber-500">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-2">
+                Categoría *
+              </label>
+              <select id="post-category" onchange="handleCategoryChange(event)" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-warm-600 dark:focus:ring-amber-500"></select>
+              
+              <input type="text" id="custom-category-input" placeholder="Escribe el tema..." class="hidden mt-2 w-full px-3 py-2 rounded-xl border border-amber-300 dark:border-amber-700 bg-white dark:bg-zinc-800 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-2">
+                Tu Nombre / Seudónimo
+              </label>
+              <input type="text" id="post-author" placeholder="Ej. Gabriel M." class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-warm-600 dark:focus:ring-amber-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-2">
+                Tiempo Lectura (min)
+              </label>
+              <input type="number" id="post-readtime" min="1" max="60" value="3" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-warm-600 dark:focus:ring-amber-500">
+            </div>
+          </div>
+
+          <!-- CAMPO PARA MÚSICA / YOUTUBE -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-2">
+              <i class="fa-solid fa-music text-amber-600 mr-1"></i> Enlace de canción (YouTube - Opcional)
+            </label>
+            <input type="url" id="post-song" placeholder="Ej. https://www.youtube.com/watch?v=..." class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-warm-600 dark:focus:ring-amber-500">
+          </div>
+
+          <div id="admin-section-picker" class="hidden bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 p-4 rounded-xl">
+            <label class="block text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-2">
+              <i class="fa-solid fa-shield-halved mr-1"></i> Opción Administrador: Ubicación del Escrito
+            </label>
+            <div class="flex items-center space-x-6 text-sm font-medium">
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="post-section" value="principal" checked class="text-amber-600 focus:ring-amber-500">
+                <span class="ml-2">Escritos Principales (Canal Oficial)</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="post-section" value="comunidad" class="text-amber-600 focus:ring-amber-500">
+                <span class="ml-2">Sección Comunidad</span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-2">
+              Contenido del Escrito *
+            </label>
+            <textarea id="post-content" rows="10" required placeholder="Escribe aquí tus reflexiones... Puedes incluir párrafos bien definidos." class="w-full px-4 py-3 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-serif text-base leading-relaxed focus:outline-none focus:ring-2 focus:ring-warm-600 dark:focus:ring-amber-500"></textarea>
+          </div>
+
+          <div class="flex items-center justify-end space-x-4 pt-4 border-t border-warm-200 dark:border-zinc-800">
+            <button type="button" onclick="switchTab('principal')" class="px-5 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 text-sm font-semibold hover:bg-warm-100 dark:hover:bg-zinc-800">
+              Cancelar
+            </button>
+            <button type="submit" id="submit-post-btn" class="px-6 py-2.5 rounded-xl bg-warm-800 hover:bg-warm-900 dark:bg-amber-600 dark:hover:bg-amber-500 text-white text-sm font-bold shadow-md transition-all">
+              <i class="fa-solid fa-paper-plane mr-2"></i>Publicar Escrito
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+
+    <!-- VIEW 4: PERFIL Y MODO ADMIN -->
+    <section id="view-perfil" class="hidden max-w-2xl mx-auto space-y-6">
+      <div class="bg-warm-50 dark:bg-zinc-900 border border-warm-200 dark:border-zinc-800 rounded-2xl p-6 shadow-md text-center">
+        <div id="profile-avatar-large" class="w-20 h-20 rounded-full bg-warm-700 dark:bg-amber-600 text-white font-bold text-3xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+          ?
+        </div>
+        <h2 id="profile-display-name" class="font-display text-2xl font-bold">Invitado</h2>
+        <p id="profile-role-desc" class="text-sm text-warm-600 dark:text-zinc-400 mt-1">Lector de la plataforma</p>
+        
+        <div class="mt-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider" id="profile-role-pill">
+          Rol: Usuario Visitante
+        </div>
+
+        <div id="logout-container" class="mt-4 hidden">
+          <button onclick="logout()" class="text-xs font-bold text-rose-600 hover:underline">
+            <i class="fa-solid fa-right-from-bracket mr-1"></i> Salir del modo Administrador
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-amber-500/10 to-amber-700/10 border border-amber-500/30 rounded-2xl p-6 shadow-md">
+        <h3 class="font-display text-lg font-bold text-warm-900 dark:text-amber-300 flex items-center gap-2">
+          <i class="fa-solid fa-key text-amber-600"></i> Acceso Propietario / Código de Administrador
+        </h3>
+        <p class="text-xs text-warm-700 dark:text-zinc-400 mt-1 mb-4">
+          Introduce tu código maestro para activar los privilegios de edición, moderación y edición de títulos de la web.
+        </p>
+
+        <div class="flex gap-2">
+          <input type="password" id="admin-key-input" placeholder="Ingresa tu código..." class="flex-grow px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+          <button onclick="loginAdminWithCode()" class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold transition-all shadow-md">
+            Desbloquear Admin
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-warm-50 dark:bg-zinc-900 border border-warm-200 dark:border-zinc-800 rounded-2xl p-6 shadow-md space-y-4">
+        <h3 class="font-display text-lg font-bold">Personalizar Tu Nombre de Autor</h3>
+        
+        <div class="space-y-3">
+          <input type="text" id="custom-username-input" placeholder="Tu nombre o firma literaria..." class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-warm-600">
+          
+          <div class="flex gap-3">
+            <button onclick="setCustomUser()" class="flex-1 py-2.5 rounded-xl bg-warm-800 dark:bg-zinc-700 hover:bg-warm-900 text-white font-bold text-sm shadow">
+              Guardar Nombre
+            </button>
+            <button onclick="setAnonymousUser()" class="px-4 py-2.5 rounded-xl bg-warm-200 dark:bg-zinc-800 hover:bg-warm-300 text-warm-800 dark:text-zinc-300 font-bold text-sm border border-warm-300 dark:border-zinc-700">
+              Poner "Anónimo"
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- MODAL: ARTICLE READER OVERLAY -->
+  <div id="post-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-zinc-950/75 backdrop-blur-sm p-3 sm:p-6 flex items-start justify-center" onclick="handleModalBackdropClick(event)">
+    <div class="relative w-full max-w-3xl bg-warm-50 dark:bg-zinc-900 my-8 rounded-2xl border border-warm-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col">
+      <div class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-warm-200 dark:border-zinc-800 bg-warm-50/95 dark:bg-zinc-900/95 backdrop-blur-md">
+        <div class="flex items-center space-x-2 text-xs font-semibold text-warm-600 dark:text-amber-500">
+          <span id="modal-category" class="px-2.5 py-1 bg-warm-200 dark:bg-zinc-800 rounded-full uppercase tracking-wider">Reflexiones</span>
+          <span>•</span>
+          <span id="modal-readtime">3 min de lectura</span>
+        </div>
+        
+        <button onclick="closePostModal()" class="w-8 h-8 rounded-full flex items-center justify-center bg-warm-200 dark:bg-zinc-800 text-warm-800 dark:text-zinc-200 hover:bg-warm-300 dark:hover:bg-zinc-700 transition-colors">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-6 sm:p-10 space-y-8">
+        <div class="space-y-4 text-left border-b border-warm-200 dark:border-zinc-800 pb-6">
+          <h1 id="modal-title" class="font-display text-2xl sm:text-4xl font-bold text-warm-900 dark:text-warm-100 leading-tight">
+            Título del Escrito
+          </h1>
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 text-sm text-warm-600 dark:text-zinc-400">
+              <div id="modal-author-avatar" class="w-8 h-8 rounded-full bg-warm-700 text-white font-bold flex items-center justify-center text-xs">
+                A
+              </div>
+              <div>
+                <span id="modal-author" class="font-bold text-warm-900 dark:text-warm-200">Nombre Autor</span>
+                <span class="mx-1.5">•</span>
+                <span id="modal-date">24 Oct, 2026</span>
+              </div>
+            </div>
+
+            <!-- BOTÓN DE REPRODUCIR MÚSICA RECOMENDADA -->
+            <div id="modal-music-btn-container" class="hidden">
+              <button onclick="playSongForActivePost()" class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow">
+                <i class="fa-solid fa-music"></i>
+                <span>Escuchar música recomendada</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <article id="modal-content" class="prose-editorial text-warm-900 dark:text-zinc-200 whitespace-pre-line space-y-4"></article>
+
+        <div class="pt-6 border-t border-warm-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-4">
+          <button onclick="likePost()" id="like-btn" class="flex items-center space-x-3 px-5 py-2.5 rounded-full bg-warm-200 dark:bg-zinc-800 hover:bg-amber-100 dark:hover:bg-amber-950/40 text-warm-800 dark:text-amber-400 font-bold transition-all transform active:scale-95 border border-warm-300 dark:border-zinc-700">
+            <i class="fa-solid fa-hands-clapping text-xl text-amber-600"></i>
+            <span>Aplausos</span>
+            <span id="modal-likes-count" class="bg-warm-300 dark:bg-zinc-700 px-2.5 py-0.5 rounded-full text-xs">0</span>
+          </button>
+
+          <div id="modal-admin-actions" class="hidden flex items-center space-x-2"></div>
+        </div>
+
+        <section class="pt-8 border-t border-warm-200 dark:border-zinc-800 space-y-6">
+          <h3 class="font-display text-xl font-bold text-warm-900 dark:text-warm-100 flex items-center gap-2">
+            <i class="fa-regular fa-comments text-amber-600"></i>
+            Comentarios y Respuestas
+          </h3>
+
+          <form onsubmit="addComment(event)" class="space-y-3">
+            <div class="flex gap-3">
+              <input type="text" id="comment-author-input" placeholder="Tu nombre..." class="w-1/3 px-3 py-2 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-xs focus:outline-none focus:ring-2 focus:ring-warm-600">
+              <input type="text" id="comment-text-input" required placeholder="Escribe tu reflexión o respuesta..." class="flex-grow px-4 py-2 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-xs focus:outline-none focus:ring-2 focus:ring-warm-600">
+            </div>
+            <div class="flex justify-end">
+              <button type="submit" class="px-5 py-2 rounded-xl bg-warm-800 dark:bg-amber-600 hover:bg-warm-900 text-white text-xs font-bold transition-all shadow">
+                Enviar Comentario
+              </button>
+            </div>
+          </form>
+
+          <div id="modal-comments-list" class="space-y-3 pt-2"></div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- MODAL EDITAR ESCRITO -->
+  <div id="edit-post-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-zinc-950/80 backdrop-blur-sm p-3 sm:p-6 flex items-start justify-center">
+    <div class="relative w-full max-w-2xl bg-warm-50 dark:bg-zinc-900 my-8 rounded-2xl border border-amber-500/40 shadow-2xl p-6 sm:p-8 space-y-6">
+      <div class="flex items-center justify-between border-b border-warm-200 dark:border-zinc-800 pb-4">
+        <h3 class="font-display text-xl font-bold text-amber-700 dark:text-amber-400 flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square"></i> Editar Escrito Publicado
+        </h3>
+        <button onclick="closeEditPostModal()" class="text-warm-500 hover:text-warm-800 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-1">Título</label>
+          <input type="text" id="edit-post-title" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-1">Categoría</label>
+            <input type="text" id="edit-post-category" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-1">Lectura (min)</label>
+            <input type="number" id="edit-post-readtime" min="1" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-1">Enlace Canción YouTube</label>
+          <input type="url" id="edit-post-song" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-1">Contenido</label>
+          <textarea id="edit-post-content" rows="8" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-serif text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-4 border-t border-warm-200 dark:border-zinc-800">
+        <button onclick="closeEditPostModal()" class="px-4 py-2 rounded-xl border border-warm-300 text-xs font-semibold">Cancelar</button>
+        <button onclick="savePostEdit()" class="px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- REPRODUCTOR DE MÚSICA FLOTANTE PARA LECTURA -->
+  <div id="floating-player" class="fixed bottom-4 right-4 z-50 hidden bg-warm-900 text-white rounded-2xl shadow-2xl p-3 border border-amber-500/50 max-w-xs transition-all duration-300">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center space-x-2 text-xs font-bold text-amber-400">
+        <i class="fa-solid fa-compact-disc animate-spin"></i>
+        <span>Música del escrito</span>
+      </div>
+      <button onclick="closeFloatingPlayer()" class="text-zinc-400 hover:text-white text-xs">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="w-full h-32 rounded-lg overflow-hidden bg-black">
+      <iframe id="floating-iframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+
+
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+
+  <!-- FOOTER -->
+  <footer class="mt-auto border-t border-warm-200 dark:border-zinc-800 bg-warm-50 dark:bg-zinc-900 py-8 transition-colors">
+    <div class="max-w-6xl mx-auto px-4 text-center space-y-2">
+      <div class="flex items-center justify-center gap-2">
+        <p id="footer-title" class="font-display font-semibold text-warm-900 dark:text-warm-100">Ecos y Reflexiones</p>
+        <button onclick="editSiteText('footer-title')" class="admin-edit-btn hidden text-xs text-amber-600 hover:underline">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-center gap-2">
+        <p id="footer-subtitle" class="text-xs text-warm-600 dark:text-zinc-400 font-serif">Un espacio personal y colectivo para pensar la vida a través de las letras.</p>
+        <button onclick="editSiteText('footer-subtitle')" class="admin-edit-btn hidden text-xs text-amber-600 hover:underline">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-center gap-2 pt-2">
+        <p id="footer-copyright" class="text-[11px] text-warm-400 dark:text-zinc-600">© 2026 Ecos y Reflexiones. Todos los derechos reservados.</p>
+        <button onclick="editSiteText('footer-copyright')" class="admin-edit-btn hidden text-xs text-amber-600 hover:underline">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- APPLICATION LOGIC & FIREBASE INTEGRATION -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const SEED_POSTS = [
+      {
+        id: "seed-1",
+        title: "El arte de la pausa en un mundo acelerado",
+        category: "Reflexiones",
+        readTime: 4,
+        section: "principal",
+        authorName: "Administrador (Creador)",
+        authorUid: "admin",
+        songUrl: "https://www.youtube.com/watch?v=5qap5aO4i9A",
+        content: "Vivimos sumergidos en una vorágine ininterrumpida de estímulos, notificaciones y urgencias artificiales. Nos hemos acostumbrado a medir el valor del día por la cantidad de tareas tachadas en una lista interminable. Sin embargo, en el fondo sabemos que la verdadera sustancia de la vida ocurre precisamente en los intersticios, en esos silencios entre nota y nota.\n\nHacer una pausa no es perder el tiempo; es recuperar la perspectiva. Cuando nos detenemos a contemplar el atardecer o a escuchar con atención sincera a un amigo, restablecemos el contacto con lo esencial.",
+        claps: 32,
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: "seed-2",
+        title: "Sobre los libros que nos leen a nosotros",
+        category: "Filosofía",
+        readTime: 5,
+        section: "principal",
+        authorName: "Administrador (Creador)",
+        authorUid: "admin",
+        songUrl: "",
+        content: "A menudo pensamos que somos nosotros quienes elegimos y devoramos las obras literarias. Pero existen ciertos libros raros y luminosos que invierten la ecuación: cuando abrimos sus páginas, son ellos los que nos examinan, revelando rincones oscuros y anhelos olvidados de nuestra propia psique.\n\nUn buen texto funciona como un espejo pulido. No te ofrece respuestas masticadas, sino que te devuelve tus preguntas con una claridad renovada.",
+        claps: 27,
+        createdAt: new Date(Date.now() - 86400000).toISOString()
+      }
+    ];
+
+    let CATEGORIES = JSON.parse(localStorage.getItem('ecos_categories') || '["Todos", "Reflexiones", "Filosofía", "Historias", "Poesía", "Vida"]');
+
+    let state = {
+      activeTab: 'principal',
+      categoryFilter: 'Todos',
+      searchQuery: '',
+      darkMode: localStorage.getItem('ecos_theme') === 'dark',
+      currentUser: {
+        name: localStorage.getItem('ecos_username') || 'Anónimo',
+        isAdmin: localStorage.getItem('ecos_is_admin') === 'true',
+        uid: null
+      },
+      customTitles: JSON.parse(localStorage.getItem('ecos_titles') || '{}'),
+      posts: [],
+      comments: [],
+      activePostId: null,
+      editingPostId: null
+    };
+
+    function loadSavedState() {
+      try {
+        const localPosts = localStorage.getItem('ecos_posts');
+        if (localPosts) {
+          state.posts = JSON.parse(localPosts);
+        } else {
+          state.posts = [...SEED_POSTS];
+          localStorage.setItem('ecos_posts', JSON.stringify(state.posts));
+        }
+
+        const localComments = localStorage.getItem('ecos_comments');
+        if (localComments) {
+          state.comments = JSON.parse(localComments);
+        } else {
+          state.comments = [];
+        }
+
+        state.posts.forEach(p => {
+          if (p.category && !CATEGORIES.includes(p.category)) {
+            CATEGORIES.push(p.category);
+          }
+        });
+      } catch (e) {
+        state.posts = [...SEED_POSTS];
+      }
+    }
+
+    function saveStateToLocal() {
+      try {
+        localStorage.setItem('ecos_posts', JSON.stringify(state.posts));
+        localStorage.setItem('ecos_comments', JSON.stringify(state.comments));
+        localStorage.setItem('ecos_is_admin', state.currentUser.isAdmin);
+        localStorage.setItem('ecos_username', state.currentUser.name);
+        localStorage.setItem('ecos_titles', JSON.stringify(state.customTitles));
+        localStorage.setItem('ecos_categories', JSON.stringify(CATEGORIES));
+      } catch (e) {}
+    }
+
+    let db = null;
+    let appId = typeof __app_id !== 'undefined' ? __app_id : 'ecos-app';
+
+    try {
+      if (typeof __firebase_config !== 'undefined') {
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        db = getFirestore(app);
+
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          signInWithCustomToken(auth, __initial_auth_token).catch(() => signInAnonymously(auth));
+        } else {
+          signInAnonymously(auth).catch(() => {});
+        }
+
+        onAuthStateChanged(auth, (user) => {
+          if (user) state.currentUser.uid = user.uid;
+        });
+
+        const postsCol = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
+        onSnapshot(postsCol, (snapshot) => {
+          if (!snapshot.empty) {
+            const remotePosts = [];
+            snapshot.forEach(docSnap => remotePosts.push({ id: docSnap.id, ...docSnap.data() }));
+            if (remotePosts.length > 0) {
+              state.posts = remotePosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+              saveStateToLocal();
+              renderApp();
+            }
+          }
+        }, () => {});
+      }
+    } catch (e) {}
+
+    function renderApp() {
+      if (state.darkMode) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('theme-icon').className = 'fa-solid fa-sun text-lg text-amber-400';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('theme-icon').className = 'fa-solid fa-moon text-lg text-warm-700';
+      }
+
+      Object.keys(state.customTitles).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = state.customTitles[id];
+      });
+
+      ['principal', 'comunidad', 'escribir', 'perfil'].forEach(tab => {
+        const viewEl = document.getElementById(`view-${tab}`);
+        const navEl = document.getElementById(`nav-${tab}`);
+        const mobNavEl = document.getElementById(`mobile-nav-${tab}`);
+
+        if (tab === state.activeTab) {
+          viewEl?.classList.remove('hidden');
+          navEl?.classList.add('bg-warm-200', 'dark:bg-zinc-800', 'text-warm-900', 'dark:text-amber-400', 'font-bold');
+          mobNavEl?.classList.add('text-amber-600', 'font-bold');
+        } else {
+          viewEl?.classList.add('hidden');
+          navEl?.classList.remove('bg-warm-200', 'dark:bg-zinc-800', 'text-warm-900', 'dark:text-amber-400', 'font-bold');
+          mobNavEl?.classList.remove('text-amber-600', 'font-bold');
+        }
+      });
+
+      const userAvatar = document.getElementById('user-avatar');
+      const userAvatarLarge = document.getElementById('profile-avatar-large');
+      const userName = document.getElementById('user-name');
+      const profileName = document.getElementById('profile-display-name');
+      const adminBadge = document.getElementById('admin-badge');
+      const rolePill = document.getElementById('profile-role-pill');
+      const roleDesc = document.getElementById('profile-role-desc');
+      const adminPicker = document.getElementById('admin-section-picker');
+      const logoutBtn = document.getElementById('logout-container');
+
+      const initial = (state.currentUser.name || 'A').charAt(0).toUpperCase();
+      userAvatar.textContent = initial;
+      userAvatarLarge.textContent = initial;
+      userName.textContent = state.currentUser.name;
+      profileName.textContent = state.currentUser.name;
+
+      const editBtns = document.querySelectorAll('.admin-edit-btn');
+
+      if (state.currentUser.isAdmin) {
+        adminBadge.classList.remove('hidden');
+        adminPicker.classList.remove('hidden');
+        logoutBtn.classList.remove('hidden');
+        editBtns.forEach(b => b.classList.remove('hidden'));
+        rolePill.className = "mt-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-600 text-white shadow";
+        rolePill.textContent = "Rol: Administrador Propietario";
+        roleDesc.textContent = "Control total de publicaciones, textos de la web y moderación";
+      } else {
+        adminBadge.classList.add('hidden');
+        adminPicker.classList.add('hidden');
+        logoutBtn.classList.add('hidden');
+        editBtns.forEach(b => b.classList.add('hidden'));
+        rolePill.className = "mt-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-warm-200 dark:bg-zinc-800 text-warm-800 dark:text-zinc-300";
+        rolePill.textContent = "Rol: Miembro de la Comunidad";
+        roleDesc.textContent = "Lector y autor comunitario";
+      }
+
+      renderPrincipalGrid();
+      renderCommunityFilters();
+      renderCommunityGrid();
+      renderCategorySelectOptions();
+
+      if (state.activePostId) renderModalContent();
+    }
+
+    function renderPrincipalGrid() {
+      const container = document.getElementById('grid-principal');
+      if (!container) return;
+
+      const principalPosts = state.posts.filter(p => p.section === 'principal');
+
+      if (principalPosts.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-center py-12 text-warm-500 font-serif">Aún no hay escritos en el canal principal.</div>`;
+        return;
+      }
+
+      container.innerHTML = principalPosts.map(post => `
+        <div onclick="openPostModal('${post.id}')" class="group cursor-pointer bg-warm-50 dark:bg-zinc-900 border border-warm-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between hover:-translate-y-1">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-500">
+              <span class="px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60">${escapeHtml(post.category)}</span>
+              <div class="flex items-center space-x-2">
+                ${post.songUrl ? '<span class="text-amber-600" title="Incluye música"><i class="fa-solid fa-music"></i></span>' : ''}
+                <span><i class="fa-regular fa-clock mr-1"></i>${post.readTime || 3} min</span>
+              </div>
+            </div>
+            <h4 class="font-display text-2xl font-bold text-warm-900 dark:text-warm-100 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors line-clamp-2 leading-snug">
+              ${escapeHtml(post.title)}
+            </h4>
+            <p class="font-serif text-sm text-warm-700 dark:text-zinc-300 line-clamp-3 leading-relaxed">
+              ${escapeHtml(post.content)}
+            </p>
+          </div>
+
+          <div class="pt-6 mt-4 border-t border-warm-200/60 dark:border-zinc-800/60 flex items-center justify-between text-xs text-warm-500 dark:text-zinc-400">
+            <span class="font-bold text-warm-800 dark:text-zinc-200">${escapeHtml(post.authorName || 'Autor')}</span>
+            <div class="flex items-center space-x-3">
+              <span><i class="fa-solid fa-hands-clapping text-amber-600 mr-1"></i>${post.claps || 0}</span>
+              <span>${formatDate(post.createdAt)}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderCommunityFilters() {
+      const container = document.getElementById('category-filters');
+      if (!container) return;
+
+      let html = CATEGORIES.map(cat => `
+        <div class="inline-flex items-center rounded-full transition-all ${
+          state.categoryFilter === cat
+            ? 'bg-warm-800 dark:bg-amber-600 text-white shadow'
+            : 'bg-warm-200 dark:bg-zinc-800 text-warm-800 dark:text-zinc-300 hover:bg-warm-300'
+        }">
+          <button onclick="filterCommunity('${cat}')" class="px-3 py-1.5 text-xs font-semibold">
+            ${cat}
+          </button>
+          ${state.currentUser.isAdmin && cat !== 'Todos' ? `
+            <button onclick="deleteCategory('${cat}')" class="pr-2.5 pl-0 text-xs font-bold text-rose-500 hover:text-rose-700" title="Eliminar categoría">
+              ×
+            </button>
+          ` : ''}
+        </div>
+      `).join('');
+
+      if (state.currentUser.isAdmin) {
+        html += `
+          <button onclick="addCustomCategoryPrompt()" class="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-600 text-white hover:bg-amber-700 transition-all shadow">
+            + Nueva
+          </button>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function renderCategorySelectOptions() {
+      const select = document.getElementById('post-category');
+      if (!select) return;
+
+      const filterList = CATEGORIES.filter(c => c !== 'Todos');
+      let html = filterList.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+      html += `<option value="NEW_CUSTOM">+ Otra categoría...</option>`;
+      select.innerHTML = html;
+    }
+
+    function renderCommunityGrid() {
+      const container = document.getElementById('grid-comunidad');
+      if (!container) return;
+
+      let list = state.posts.filter(p => p.section === 'comunidad');
+
+      if (state.categoryFilter !== 'Todos') {
+        list = list.filter(p => p.category === state.categoryFilter);
+      }
+
+      if (state.searchQuery.trim()) {
+        const q = state.searchQuery.toLowerCase();
+        list = list.filter(p => 
+          p.title.toLowerCase().includes(q) || 
+          p.content.toLowerCase().includes(q) || 
+          (p.authorName && p.authorName.toLowerCase().includes(q))
+        );
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12 bg-warm-50 dark:bg-zinc-900 rounded-2xl border border-dashed border-warm-300 dark:border-zinc-800">
+            <i class="fa-solid fa-pen-fountain text-3xl text-warm-400 mb-3 block"></i>
+            <p class="font-serif text-warm-600 dark:text-zinc-400">No hay escritos disponibles en esta selección.</p>
+            <button onclick="switchTab('escribir')" class="mt-4 px-4 py-2 bg-warm-800 dark:bg-amber-600 text-white text-xs font-bold rounded-xl shadow">
+              Sé el primero en publicar
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(post => `
+        <div class="bg-warm-50 dark:bg-zinc-900 border border-warm-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-xs font-semibold text-warm-500">
+              <span class="px-2 py-0.5 rounded bg-warm-200 dark:bg-zinc-800 text-warm-800 dark:text-zinc-300 uppercase">${escapeHtml(post.category)}</span>
+              <div class="flex items-center space-x-2">
+                ${post.songUrl ? '<span class="text-amber-600" title="Incluye música"><i class="fa-solid fa-music"></i></span>' : ''}
+                <span>${post.readTime || 3} min</span>
+              </div>
+            </div>
+
+            <h4 onclick="openPostModal('${post.id}')" class="font-display text-xl font-bold cursor-pointer text-warm-900 dark:text-warm-100 hover:text-amber-600 transition-colors leading-snug line-clamp-2">
+              ${escapeHtml(post.title)}
+            </h4>
+
+            <p onclick="openPostModal('${post.id}')" class="font-serif text-xs text-warm-700 dark:text-zinc-300 line-clamp-3 leading-relaxed cursor-pointer">
+              ${escapeHtml(post.content)}
+            </p>
+          </div>
+
+          <div class="pt-4 mt-4 border-t border-warm-200/60 dark:border-zinc-800/60 space-y-3">
+            <div class="flex items-center justify-between text-xs text-warm-500">
+              <span class="font-semibold text-warm-800 dark:text-zinc-200">${escapeHtml(post.authorName || 'Anónimo')}</span>
+              <span><i class="fa-solid fa-hands-clapping text-amber-600"></i> ${post.claps || 0}</span>
+            </div>
+
+            ${state.currentUser.isAdmin ? `
+              <div class="pt-2 flex items-center justify-between text-[11px] bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1.5 rounded-lg border border-amber-200 dark:border-amber-900/40">
+                <span class="font-bold text-amber-800 dark:text-amber-400">Admin:</span>
+                <div class="flex gap-2">
+                  <button onclick="promotePost('${post.id}')" class="text-amber-700 dark:text-amber-300 hover:underline font-semibold">
+                    <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>Promover
+                  </button>
+                  <button onclick="deletePost('${post.id}')" class="text-rose-600 dark:text-rose-400 hover:underline font-semibold">
+                    <i class="fa-solid fa-trash mr-1"></i>Borrar
+                  </button>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderModalContent() {
+      const post = state.posts.find(p => p.id === state.activePostId);
+      if (!post) return;
+
+      document.getElementById('modal-title').textContent = post.title;
+      document.getElementById('modal-category').textContent = post.category;
+      document.getElementById('modal-readtime').textContent = `${post.readTime || 3} min de lectura`;
+      document.getElementById('modal-author').textContent = post.authorName || 'Anónimo';
+      document.getElementById('modal-author-avatar').textContent = (post.authorName || 'A').charAt(0).toUpperCase();
+      document.getElementById('modal-date').textContent = formatDate(post.createdAt);
+      document.getElementById('modal-content').textContent = post.content;
+      document.getElementById('modal-likes-count').textContent = post.claps || 0;
+
+      // BOTÓN MÚSICA RECOMENDADA
+      const musicBtnContainer = document.getElementById('modal-music-btn-container');
+      if (post.songUrl) {
+        musicBtnContainer.classList.remove('hidden');
+      } else {
+        musicBtnContainer.classList.add('hidden');
+      }
+
+      const adminActions = document.getElementById('modal-admin-actions');
+      if (state.currentUser.isAdmin) {
+        adminActions.classList.remove('hidden');
+        adminActions.innerHTML = `
+          <button onclick="openEditPostModal('${post.id}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold shadow">
+            Editar Escrito
+          </button>
+          <button onclick="promotePost('${post.id}')" class="px-3 py-1.5 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-xs font-bold shadow">
+            ${post.section === 'principal' ? 'Mover a Comunidad' : 'Promover a Principal'}
+          </button>
+          <button onclick="deletePost('${post.id}')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold shadow">
+            Eliminar
+          </button>
+        `;
+      } else {
+        adminActions.classList.add('hidden');
+      }
+
+      renderCommentsList(post.id);
+    }
+
+    function renderCommentsList(postId) {
+      const container = document.getElementById('modal-comments-list');
+      if (!container) return;
+
+      const postComments = state.comments.filter(c => c.postId === postId);
+
+      if (postComments.length === 0) {
+        container.innerHTML = `<p class="text-xs text-warm-500 italic">Aún no hay respuestas. Sé el primero en compartir tu punto de vista.</p>`;
+        return;
+      }
+
+      container.innerHTML = postComments.map(c => `
+        <div class="bg-warm-100 dark:bg-zinc-800/60 p-3.5 rounded-xl border border-warm-200 dark:border-zinc-700/60 space-y-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-warm-900 dark:text-warm-100">${escapeHtml(c.authorName || 'Lector')}</span>
+            <div class="flex items-center space-x-2">
+              <span class="text-warm-500 dark:text-zinc-400">${formatDate(c.createdAt)}</span>
+              ${state.currentUser.isAdmin ? `
+                <button onclick="deleteComment('${c.id}')" class="text-rose-500 hover:underline text-[11px] font-bold">Borrar</button>
+              ` : ''}
+            </div>
+          </div>
+          <p class="text-xs font-serif text-warm-800 dark:text-zinc-200 leading-relaxed">
+            ${escapeHtml(c.text)}
+          </p>
+        </div>
+      `).join('');
+    }
+
+    // --- REPRODUCTOR DE MÚSICA DE YOUTUBE ---
+    function getYoutubeEmbedUrl(url) {
+      if (!url) return '';
+      let videoId = '';
+      if (url.includes('v=')) {
+        videoId = url.split('v=')[1].split('&')[0];
+      } else if (url.includes('youtu.be/')) {
+        videoId = url.split('youtu.be/')[1].split('?')[0];
+      }
+      return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : '';
+    }
+
+    window.playSongForActivePost = function() {
+      const post = state.posts.find(p => p.id === state.activePostId);
+      if (!post || !post.songUrl) return;
+
+      const embedUrl = getYoutubeEmbedUrl(post.songUrl);
+      if (!embedUrl) {
+        showToast("Enlace de canción no válido.", "error");
+        return;
+      }
+
+      document.getElementById('floating-iframe').src = embedUrl;
+      document.getElementById('floating-player').classList.remove('hidden');
+      showToast("Reproduciendo música ambiental...", "success");
+    };
+
+    window.closeFloatingPlayer = function() {
+      document.getElementById('floating-iframe').src = "";
+      document.getElementById('floating-player').classList.add('hidden');
+    };
+
+    // --- INTERACTIVE HANDLERS ---
+
+    window.switchTab = function(tabName) {
+      state.activeTab = tabName;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      renderApp();
+    };
+
+    window.toggleDarkMode = function() {
+      state.darkMode = !state.darkMode;
+      localStorage.setItem('ecos_theme', state.darkMode ? 'dark' : 'light');
+      renderApp();
+    };
+
+    window.filterCommunity = function(category) {
+      state.categoryFilter = category;
+      renderApp();
+    };
+
+    window.addCustomCategoryPrompt = function() {
+      const val = prompt("Escribe el nombre de la nueva categoría:");
+      if (val && val.trim()) {
+        const cat = val.trim();
+        if (!CATEGORIES.includes(cat)) {
+          CATEGORIES.push(cat);
+          saveStateToLocal();
+          renderApp();
+          showToast(`Categoría "${cat}" añadida`, "success");
+        }
+      }
+    };
+
+    window.deleteCategory = function(cat) {
+      if (cat === 'Todos') return;
+      CATEGORIES = CATEGORIES.filter(c => c !== cat);
+      if (state.categoryFilter === cat) state.categoryFilter = 'Todos';
+      saveStateToLocal();
+      renderApp();
+      showToast(`Categoría "${cat}" eliminada`, "info");
+    };
+
+    window.openEditPostModal = function(postId) {
+      const post = state.posts.find(p => p.id === postId);
+      if (!post) return;
+
+      state.editingPostId = postId;
+      document.getElementById('edit-post-title').value = post.title;
+      document.getElementById('edit-post-category').value = post.category;
+      document.getElementById('edit-post-readtime').value = post.readTime || 3;
+      document.getElementById('edit-post-song').value = post.songUrl || '';
+      document.getElementById('edit-post-content').value = post.content;
+
+      document.getElementById('edit-post-modal').classList.remove('hidden');
+    };
+
+    window.closeEditPostModal = function() {
+      document.getElementById('edit-post-modal').classList.add('hidden');
+      state.editingPostId = null;
+    };
+
+    window.savePostEdit = function() {
+      if (!state.editingPostId) return;
+
+      const post = state.posts.find(p => p.id === state.editingPostId);
+      if (!post) return;
+
+      const title = document.getElementById('edit-post-title').value.trim();
+      const category = document.getElementById('edit-post-category').value.trim();
+      const readTime = parseInt(document.getElementById('edit-post-readtime').value) || 3;
+      const songUrl = document.getElementById('edit-post-song').value.trim();
+      const content = document.getElementById('edit-post-content').value.trim();
+
+      if (!title || !content) {
+        showToast("Rellena el título y el contenido.", "error");
+        return;
+      }
+
+      post.title = title;
+      post.category = category;
+      post.readTime = readTime;
+      post.songUrl = songUrl;
+      post.content = content;
+
+      if (category && !CATEGORIES.includes(category)) {
+        CATEGORIES.push(category);
+      }
+
+      saveStateToLocal();
+
+      if (db) {
+        try {
+          updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', post.id), {
+            title, category, readTime, songUrl, content
+          }).catch(() => {});
+        } catch (e) {}
+      }
+
+      closeEditPostModal();
+      renderApp();
+      showToast("¡Escrito actualizado!", "success");
+    };
+
+    window.onSearchInput = function(e) {
+      state.searchQuery = e.target.value;
+      renderCommunityGrid();
+    };
+
+    window.downloadPrincipalPosts = function() {
+      const principalPosts = state.posts.filter(p => p.section === 'principal');
+
+      if (principalPosts.length === 0) {
+        showToast("No hay escritos principales para descargar.", "error");
+        return;
+      }
+
+      let content = "=========================================\n";
+      content += "    ECOS Y REFLEXIONES - CANAL OFICIAL    \n";
+      content += "=========================================\n\n";
+
+      principalPosts.forEach((p, idx) => {
+        content += `[${idx + 1}] ${p.title.toUpperCase()}\n`;
+        content += `Autor: ${p.authorName || 'Administrador'} | Categoría: ${p.category} | Fecha: ${formatDate(p.createdAt)}\n`;
+        if (p.songUrl) content += `Música recomendada: ${p.songUrl}\n`;
+        content += "-----------------------------------------\n";
+        content += `${p.content}\n\n`;
+        content += "=========================================\n\n";
+      });
+
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `escritos_principales_${new Date().toISOString().slice(0, 10)}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showToast("Descargando escritos principales...", "success");
+    };
+
+    window.editLogoIcon = function() {
+      if (!state.currentUser.isAdmin) return;
+      const logoEl = document.getElementById('site-logo-icon');
+      const val = prompt("Escribe la letra o inicial para el logo de la web:", logoEl.textContent.trim());
+      if (val && val.trim()) {
+        const initial = val.trim().charAt(0).toUpperCase();
+        logoEl.textContent = initial;
+        state.customTitles['site-logo-icon'] = initial;
+        saveStateToLocal();
+        showToast("Logo actualizado", "success");
+      }
+    };
+
+    window.editSiteText = function(elementId) {
+      if (!state.currentUser.isAdmin) return;
+      const element = document.getElementById(elementId);
+      if (!element) return;
+
+      const currentVal = element.textContent.trim();
+      const newVal = prompt("Escribe el nuevo texto para este apartado:", currentVal);
+
+      if (newVal !== null && newVal.trim() !== '') {
+        element.textContent = newVal.trim();
+        state.customTitles[elementId] = newVal.trim();
+        saveStateToLocal();
+        showToast("Texto actualizado correctamente.", "success");
+      }
+    };
+
+    window.loginAdminWithCode = function() {
+      const input = document.getElementById('admin-key-input');
+      const val = input.value.trim();
+
+      if (val === 'SarieroGuillem2005' || val.toLowerCase() === 'admin') {
+        state.currentUser.isAdmin = true;
+        state.currentUser.name = state.currentUser.name !== 'Invitado' ? state.currentUser.name : 'Administrador';
+        input.value = '';
+        saveStateToLocal();
+        showToast("¡Modo Administrador activado con éxito!", "success");
+        renderApp();
+      } else {
+        showToast("Código incorrecto. Inténtalo de nuevo.", "error");
+      }
+    };
+
+    window.setCustomUser = function() {
+      const input = document.getElementById('custom-username-input');
+      const val = input.value.trim();
+      if (!val) return;
+
+      state.currentUser.name = val;
+      input.value = '';
+      saveStateToLocal();
+      showToast(`Nombre actualizado a "${val}"`, "success");
+      renderApp();
+    };
+
+    window.setAnonymousUser = function() {
+      state.currentUser.name = 'Anónimo';
+      saveStateToLocal();
+      showToast('Firma configurada como "Anónimo"', "info");
+      renderApp();
+    };
+
+    window.logout = function() {
+      state.currentUser.isAdmin = false;
+      saveStateToLocal();
+      showToast("Has salido del modo administrador.", "info");
+      renderApp();
+    };
+
+    window.handleCategoryChange = function(e) {
+      const customInput = document.getElementById('custom-category-input');
+      if (e.target.value === 'NEW_CUSTOM') {
+        customInput.classList.remove('hidden');
+        customInput.focus();
+      } else {
+        customInput.classList.add('hidden');
+      }
+    };
+
+    window.submitNewPost = function(e) {
+      e.preventDefault();
+
+      const title = document.getElementById('post-title').value.trim();
+      const categorySelect = document.getElementById('post-category').value;
+      const customCategory = document.getElementById('custom-category-input').value.trim();
+      const authorInput = document.getElementById('post-author').value.trim();
+      const readTime = parseInt(document.getElementById('post-readtime').value) || 3;
+      const songUrl = document.getElementById('post-song').value.trim();
+      const content = document.getElementById('post-content').value.trim();
+
+      let category = categorySelect;
+      if (categorySelect === 'NEW_CUSTOM') {
+        if (!customCategory) {
+          showToast("Por favor, escribe la categoría personalizada.", "error");
+          return;
+        }
+        category = customCategory;
+        if (!CATEGORIES.includes(category)) {
+          CATEGORIES.push(category);
+        }
+      }
+
+      let section = 'comunidad';
+      if (state.currentUser.isAdmin) {
+        const radio = document.querySelector('input[name="post-section"]:checked');
+        if (radio) section = radio.value;
+      }
+
+      if (!title || !content) {
+        showToast("Por favor rellena el título y el contenido.", "error");
+        return;
+      }
+
+      const authorName = authorInput || state.currentUser.name || 'Anónimo';
+
+      const newPost = {
+        id: 'post-' + Date.now(),
+        title,
+        category,
+        readTime,
+        songUrl,
+        content,
+        section,
+        authorName,
+        claps: 0,
+        createdAt: new Date().toISOString()
+      };
+
+      state.posts.unshift(newPost);
+      saveStateToLocal();
+
+      if (db) {
+        try {
+          addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), newPost).catch(() => {});
+        } catch (e) {}
+      }
+
+      document.getElementById('post-form').reset();
+      document.getElementById('custom-category-input').classList.add('hidden');
+      showToast("¡Escrito publicado correctamente!", "success");
+      window.switchTab(section);
+    };
+
+    window.openPostModal = function(postId) {
+      state.activePostId = postId;
+      renderModalContent();
+      document.getElementById('post-modal').classList.remove('hidden');
+    };
+
+    window.closePostModal = function() {
+      document.getElementById('post-modal').classList.add('hidden');
+      state.activePostId = null;
+    };
+
+    window.handleModalBackdropClick = function(e) {
+      if (e.target.id === 'post-modal') {
+        window.closePostModal();
+      }
+    };
+
+    window.likePost = function() {
+      if (!state.activePostId) return;
+      const post = state.posts.find(p => p.id === state.activePostId);
+      if (!post) return;
+
+      post.claps = (post.claps || 0) + 1;
+      saveStateToLocal();
+      renderApp();
+
+      if (db) {
+        try {
+          updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', post.id), { claps: post.claps }).catch(() => {});
+        } catch (e) {}
+      }
+    };
+
+    window.addComment = function(e) {
+      e.preventDefault();
+      if (!state.activePostId) return;
+
+      const textInput = document.getElementById('comment-text-input');
+      const authorInput = document.getElementById('comment-author-input');
+      const text = textInput.value.trim();
+      const author = authorInput.value.trim() || state.currentUser.name || 'Lector';
+
+      if (!text) return;
+
+      const newComment = {
+        id: 'comm-' + Date.now(),
+        postId: state.activePostId,
+        authorName: author,
+        text,
+        createdAt: new Date().toISOString()
+      };
+
+      state.comments.push(newComment);
+      saveStateToLocal();
+      textInput.value = '';
+
+      if (db) {
+        try {
+          addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'comments'), newComment).catch(() => {});
+        } catch (e) {}
+      }
+
+      renderCommentsList(state.activePostId);
+      showToast("Comentario enviado", "success");
+    };
+
+    window.deleteComment = function(commentId) {
+      state.comments = state.comments.filter(c => c.id !== commentId);
+      saveStateToLocal();
+      if (state.activePostId) renderCommentsList(state.activePostId);
+      showToast("Comentario eliminado", "info");
+    };
+
+    window.promotePost = function(postId) {
+      if (!state.currentUser.isAdmin) return;
+      const post = state.posts.find(p => p.id === postId);
+      if (!post) return;
+
+      post.section = post.section === 'principal' ? 'comunidad' : 'principal';
+      saveStateToLocal();
+      showToast(`Escrito movido a: ${post.section === 'principal' ? 'Canal Principal' : 'Comunidad'}`, "success");
+      
+      if (state.activePostId === postId) {
+        window.closePostModal();
+      }
+      renderApp();
+    };
+
+    window.deletePost = function(postId) {
+      if (!state.currentUser.isAdmin) return;
+      state.posts = state.posts.filter(p => p.id !== postId);
+      saveStateToLocal();
+      showToast("Escrito eliminado", "info");
+
+      if (state.activePostId === postId) {
+        window.closePostModal();
+      }
+      renderApp();
+    };
+
+    function showToast(msg, type = "info") {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      let bg = "bg-warm-900 text-white";
+      if (type === "success") bg = "bg-emerald-700 text-white";
+      if (type === "error") bg = "bg-rose-700 text-white";
+
+      toast.className = `${bg} px-4 py-3 rounded-xl shadow-2xl text-xs font-semibold flex items-center space-x-2 transition-all transform translate-y-2 opacity-0 pointer-events-auto`;
+      toast.innerHTML = `<span>${escapeHtml(msg)}</span>`;
+
+      container.appendChild(toast);
+
+      setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[m]));
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && state.activePostId) {
+        window.closePostModal();
+      }
+    });
+
+    loadSavedState();
+    renderApp();
+  </script>
+</body>
+</html>
