@@ -75,11 +75,18 @@
       <div class="flex items-center justify-between h-20">
         
         <!-- Brand Logo -->
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('principal')">
-          <div class="w-10 h-10 rounded-full bg-warm-700 text-warm-50 dark:bg-amber-600 flex items-center justify-center font-display font-bold text-xl shadow-md">
-            E
+        <div class="flex items-center space-x-3">
+          <div class="relative group">
+            <div id="site-logo-icon" onclick="switchTab('principal')" class="w-10 h-10 rounded-full bg-warm-700 text-warm-50 dark:bg-amber-600 flex items-center justify-center font-display font-bold text-xl shadow-md cursor-pointer">
+              E
+            </div>
+            <!-- Botón para editar la letra del logo -->
+            <button onclick="editLogoIcon()" class="admin-edit-btn hidden absolute -bottom-1 -right-1 w-5 h-5 bg-amber-600 text-white text-[10px] rounded-full flex items-center justify-center shadow" title="Cambiar Inicial Logo">
+              <i class="fa-solid fa-pen"></i>
+            </button>
           </div>
-          <div>
+
+          <div class="cursor-pointer" onclick="switchTab('principal')">
             <div class="flex items-center gap-2">
               <h1 id="site-title" class="font-display text-xl sm:text-2xl font-bold tracking-tight text-warm-900 dark:text-warm-100">
                 Ecos y Reflexiones
@@ -114,12 +121,10 @@
 
         <!-- User Controls & Dark Mode -->
         <div class="flex items-center space-x-3">
-          <!-- Dark Mode Toggle -->
           <button onclick="toggleDarkMode()" class="p-2.5 rounded-full text-warm-700 dark:text-amber-400 hover:bg-warm-200 dark:hover:bg-zinc-800 transition-colors" title="Cambiar tema">
             <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
           </button>
 
-          <!-- User Pill -->
           <button onclick="switchTab('perfil')" id="user-pill" class="flex items-center space-x-2 px-3 py-1.5 rounded-full border border-warm-300 dark:border-zinc-700 hover:border-warm-500 transition-all bg-warm-50 dark:bg-zinc-800">
             <div id="user-avatar" class="w-6 h-6 rounded-full bg-warm-600 dark:bg-amber-600 text-white text-xs flex items-center justify-center font-bold">
               ?
@@ -131,7 +136,7 @@
       </div>
     </div>
 
-    <!-- Mobile Navigation Bar (Bottom) -->
+    <!-- Mobile Navigation Bar -->
     <div class="md:hidden border-t border-warm-200 dark:border-zinc-800 bg-warm-50 dark:bg-zinc-900 flex justify-around py-2 text-xs font-medium">
       <button onclick="switchTab('principal')" id="mobile-nav-principal" class="flex flex-col items-center p-1 text-warm-800 dark:text-zinc-300">
         <i class="fa-solid fa-feather-pointed text-base mb-1"></i>
@@ -157,7 +162,6 @@
 
     <!-- VIEW 1: ESCRITOS PRINCIPALES -->
     <section id="view-principal" class="space-y-8">
-      <!-- Hero Banner -->
       <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-warm-800 via-warm-900 to-zinc-900 text-warm-100 p-8 sm:p-12 shadow-xl border border-warm-700/30">
         <div class="absolute -right-10 -bottom-10 opacity-10 text-white pointer-events-none">
           <i class="fa-solid fa-book-open text-[240px]"></i>
@@ -187,7 +191,6 @@
         </div>
       </div>
 
-      <!-- Articles Section Header -->
       <div class="space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-warm-200 dark:border-zinc-800 pb-3 gap-3">
           <div class="flex items-center gap-2">
@@ -200,17 +203,13 @@
             </button>
           </div>
 
-          <!-- BOTÓN DE DESCARGA DE ESCRITOS PRINCIPALES -->
           <button onclick="downloadPrincipalPosts()" class="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-warm-200 dark:bg-zinc-800 hover:bg-warm-300 dark:hover:bg-zinc-700 text-warm-900 dark:text-zinc-100 text-xs font-bold transition-all border border-warm-300 dark:border-zinc-700 shadow-sm">
             <i class="fa-solid fa-file-arrow-down text-amber-600 text-sm"></i>
             <span>Descargar Escritos (.TXT)</span>
           </button>
         </div>
 
-        <!-- Featured Grid -->
-        <div id="grid-principal" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Dynamically populated -->
-        </div>
+        <div id="grid-principal" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
       </div>
     </section>
 
@@ -239,21 +238,15 @@
         </div>
 
         <!-- Category Filters -->
-        <div class="flex flex-wrap gap-2" id="category-filters">
-          <!-- Filter buttons rendered dynamically -->
-        </div>
+        <div class="flex flex-wrap items-center gap-2" id="category-filters"></div>
       </div>
 
-      <!-- Search Input -->
       <div class="relative max-w-md">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-warm-400"></i>
         <input type="text" id="search-input" oninput="onSearchInput(event)" placeholder="Buscar por título, contenido o autor..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-warm-50 dark:bg-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-warm-600 dark:focus:ring-amber-500">
       </div>
 
-      <!-- Community Grid -->
-      <div id="grid-comunidad" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Dynamically populated -->
-      </div>
+      <div id="grid-comunidad" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </section>
 
 
@@ -283,16 +276,8 @@
               <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-2">
                 Categoría *
               </label>
-              <select id="post-category" onchange="handleCategoryChange(event)" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-warm-600 dark:focus:ring-amber-500">
-                <option value="Reflexiones">Reflexiones</option>
-                <option value="Filosofía">Filosofía</option>
-                <option value="Historias">Historias</option>
-                <option value="Poesía">Poesía</option>
-                <option value="Vida">Vida</option>
-                <option value="NEW_CUSTOM">+ Otra categoría...</option>
-              </select>
+              <select id="post-category" onchange="handleCategoryChange(event)" class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-warm-600 dark:focus:ring-amber-500"></select>
               
-              <!-- Campo dinámico para escribir categoría propia -->
               <input type="text" id="custom-category-input" placeholder="Escribe el tema..." class="hidden mt-2 w-full px-3 py-2 rounded-xl border border-amber-300 dark:border-amber-700 bg-white dark:bg-zinc-800 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
             </div>
 
@@ -311,7 +296,6 @@
             </div>
           </div>
 
-          <!-- Section Selection (Admin privilege) -->
           <div id="admin-section-picker" class="hidden bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 p-4 rounded-xl">
             <label class="block text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-2">
               <i class="fa-solid fa-shield-halved mr-1"></i> Opción Administrador: Ubicación del Escrito
@@ -350,8 +334,6 @@
 
     <!-- VIEW 4: PERFIL Y MODO ADMIN -->
     <section id="view-perfil" class="hidden max-w-2xl mx-auto space-y-6">
-      
-      <!-- Current Status Card -->
       <div class="bg-warm-50 dark:bg-zinc-900 border border-warm-200 dark:border-zinc-800 rounded-2xl p-6 shadow-md text-center">
         <div id="profile-avatar-large" class="w-20 h-20 rounded-full bg-warm-700 dark:bg-amber-600 text-white font-bold text-3xl flex items-center justify-center mx-auto mb-4 shadow-lg">
           ?
@@ -370,7 +352,6 @@
         </div>
       </div>
 
-      <!-- Admin Password Elevation Box -->
       <div class="bg-gradient-to-br from-amber-500/10 to-amber-700/10 border border-amber-500/30 rounded-2xl p-6 shadow-md">
         <h3 class="font-display text-lg font-bold text-warm-900 dark:text-amber-300 flex items-center gap-2">
           <i class="fa-solid fa-key text-amber-600"></i> Acceso Propietario / Código de Administrador
@@ -387,7 +368,6 @@
         </div>
       </div>
 
-      <!-- Quick Auth / Custom Username Form -->
       <div class="bg-warm-50 dark:bg-zinc-900 border border-warm-200 dark:border-zinc-800 rounded-2xl p-6 shadow-md space-y-4">
         <h3 class="font-display text-lg font-bold">Personalizar Tu Nombre de Autor</h3>
         
@@ -398,8 +378,6 @@
             <button onclick="setCustomUser()" class="flex-1 py-2.5 rounded-xl bg-warm-800 dark:bg-zinc-700 hover:bg-warm-900 text-white font-bold text-sm shadow">
               Guardar Nombre
             </button>
-            
-            <!-- BOTÓN PARA PONER EL NOMBRE PREDETERMINADO "ANÓNIMO" -->
             <button onclick="setAnonymousUser()" class="px-4 py-2.5 rounded-xl bg-warm-200 dark:bg-zinc-800 hover:bg-warm-300 text-warm-800 dark:text-zinc-300 font-bold text-sm border border-warm-300 dark:border-zinc-700">
               Poner "Anónimo"
             </button>
@@ -411,11 +389,9 @@
   </main>
 
 
-  <!-- MODAL: ARTICLE READER OVERLAY (DESPLAZAMIENTO LIBRE CORREGIDO) -->
+  <!-- MODAL: ARTICLE READER OVERLAY -->
   <div id="post-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-zinc-950/75 backdrop-blur-sm p-3 sm:p-6 flex items-start justify-center" onclick="handleModalBackdropClick(event)">
     <div class="relative w-full max-w-3xl bg-warm-50 dark:bg-zinc-900 my-8 rounded-2xl border border-warm-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col">
-      
-      <!-- Top Bar -->
       <div class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-warm-200 dark:border-zinc-800 bg-warm-50/95 dark:bg-zinc-900/95 backdrop-blur-md">
         <div class="flex items-center space-x-2 text-xs font-semibold text-warm-600 dark:text-amber-500">
           <span id="modal-category" class="px-2.5 py-1 bg-warm-200 dark:bg-zinc-800 rounded-full uppercase tracking-wider">Reflexiones</span>
@@ -428,10 +404,7 @@
         </button>
       </div>
 
-      <!-- Modal Body -->
       <div class="p-6 sm:p-10 space-y-8">
-        
-        <!-- Header -->
         <div class="space-y-4 text-left border-b border-warm-200 dark:border-zinc-800 pb-6">
           <h1 id="modal-title" class="font-display text-2xl sm:text-4xl font-bold text-warm-900 dark:text-warm-100 leading-tight">
             Título del Escrito
@@ -448,12 +421,8 @@
           </div>
         </div>
 
-        <!-- Article Content -->
-        <article id="modal-content" class="prose-editorial text-warm-900 dark:text-zinc-200 whitespace-pre-line space-y-4">
-          <!-- Main Content -->
-        </article>
+        <article id="modal-content" class="prose-editorial text-warm-900 dark:text-zinc-200 whitespace-pre-line space-y-4"></article>
 
-        <!-- Actions Bar -->
         <div class="pt-6 border-t border-warm-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-4">
           <button onclick="likePost()" id="like-btn" class="flex items-center space-x-3 px-5 py-2.5 rounded-full bg-warm-200 dark:bg-zinc-800 hover:bg-amber-100 dark:hover:bg-amber-950/40 text-warm-800 dark:text-amber-400 font-bold transition-all transform active:scale-95 border border-warm-300 dark:border-zinc-700">
             <i class="fa-solid fa-hands-clapping text-xl text-amber-600"></i>
@@ -461,12 +430,9 @@
             <span id="modal-likes-count" class="bg-warm-300 dark:bg-zinc-700 px-2.5 py-0.5 rounded-full text-xs">0</span>
           </button>
 
-          <div id="modal-admin-actions" class="hidden flex items-center space-x-2">
-            <!-- Dynamic Admin Controls -->
-          </div>
+          <div id="modal-admin-actions" class="hidden flex items-center space-x-2"></div>
         </div>
 
-        <!-- Comments Section -->
         <section class="pt-8 border-t border-warm-200 dark:border-zinc-800 space-y-6">
           <h3 class="font-display text-xl font-bold text-warm-900 dark:text-warm-100 flex items-center gap-2">
             <i class="fa-regular fa-comments text-amber-600"></i>
@@ -485,26 +451,39 @@
             </div>
           </form>
 
-          <div id="modal-comments-list" class="space-y-3 pt-2">
-            <!-- Comments List -->
-          </div>
+          <div id="modal-comments-list" class="space-y-3 pt-2"></div>
         </section>
 
       </div>
     </div>
   </div>
 
-
-  <!-- TOAST CONTAINER -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
 
-  <!-- FOOTER -->
+  <!-- FOOTER EDITABLE -->
   <footer class="mt-auto border-t border-warm-200 dark:border-zinc-800 bg-warm-50 dark:bg-zinc-900 py-8 transition-colors">
     <div class="max-w-6xl mx-auto px-4 text-center space-y-2">
-      <p id="footer-title" class="font-display font-semibold text-warm-900 dark:text-warm-100">Ecos y Reflexiones</p>
-      <p id="footer-subtitle" class="text-xs text-warm-600 dark:text-zinc-400 font-serif">Un espacio personal y colectivo para pensar la vida a través de las letras.</p>
-      <p class="text-[11px] text-warm-400 dark:text-zinc-600 pt-2">© 2026 Ecos y Reflexiones. Todos los derechos reservados.</p>
+      <div class="flex items-center justify-center gap-2">
+        <p id="footer-title" class="font-display font-semibold text-warm-900 dark:text-warm-100">Ecos y Reflexiones</p>
+        <button onclick="editSiteText('footer-title')" class="admin-edit-btn hidden text-xs text-amber-600 hover:underline">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-center gap-2">
+        <p id="footer-subtitle" class="text-xs text-warm-600 dark:text-zinc-400 font-serif">Un espacio personal y colectivo para pensar la vida a través de las letras.</p>
+        <button onclick="editSiteText('footer-subtitle')" class="admin-edit-btn hidden text-xs text-amber-600 hover:underline">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-center gap-2 pt-2">
+        <p id="footer-copyright" class="text-[11px] text-warm-400 dark:text-zinc-600">© 2026 Ecos y Reflexiones. Todos los derechos reservados.</p>
+        <button onclick="editSiteText('footer-copyright')" class="admin-edit-btn hidden text-xs text-amber-600 hover:underline">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+      </div>
     </div>
   </footer>
 
@@ -515,7 +494,6 @@
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // --- SEED POSTS FOR FIRST LOAD ---
     const SEED_POSTS = [
       {
         id: "seed-1",
@@ -540,36 +518,11 @@
         content: "A menudo pensamos que somos nosotros quienes elegimos y devoramos las obras literarias. Pero existen ciertos libros raros y luminosos que invierten la ecuación: cuando abrimos sus páginas, son ellos los que nos examinan, revelando rincones oscuros y anhelos olvidados de nuestra propia psique.\n\nUn buen texto funciona como un espejo pulido. No te ofrece respuestas masticadas, sino que te devuelve tus preguntas con una claridad renovada.",
         claps: 27,
         createdAt: new Date(Date.now() - 86400000).toISOString()
-      },
-      {
-        id: "seed-3",
-        title: "Un café al atardecer en el viejo barrio",
-        category: "Historias",
-        readTime: 3,
-        section: "comunidad",
-        authorName: "Lucía M.",
-        authorUid: "user-1",
-        content: "Ayer me senté en la esquina de siempre. El olor a grano tostado se mezclaba con la brisa fresca de otoño. Una anciana alimentaba a las palomas con migas de pan mientras le sonreía a un niño. En ese instante comprendí que la felicidad no es una meta lejana, sino la suma de pequeños fotogramas cotidianos que solemos ignorar por andar con prisa.",
-        claps: 14,
-        createdAt: new Date(Date.now() - 172800000).toISOString()
-      },
-      {
-        id: "seed-4",
-        title: "Cartas al tiempo que se fue",
-        category: "Poesía",
-        readTime: 2,
-        section: "comunidad",
-        authorName: "Carlos R.",
-        authorUid: "user-2",
-        content: "No le pido al tiempo que regrese,\nni que detenga sus manecillas doradas,\nsólo le agradezco las huellas suaves\nque dejó grabadas en la mirada.",
-        claps: 19,
-        createdAt: new Date(Date.now() - 250000000).toISOString()
       }
     ];
 
-    let CATEGORIES = ["Todos", "Reflexiones", "Filosofía", "Historias", "Poesía", "Vida"];
+    let CATEGORIES = JSON.parse(localStorage.getItem('ecos_categories') || '["Todos", "Reflexiones", "Filosofía", "Historias", "Poesía", "Vida"]');
 
-    // --- APPLICATION STATE ---
     let state = {
       activeTab: 'principal',
       categoryFilter: 'Todos',
@@ -586,7 +539,6 @@
       activePostId: null
     };
 
-    // --- INITIALIZE DATA FROM LOCALSTORAGE OR SEED ---
     function loadSavedState() {
       try {
         const localPosts = localStorage.getItem('ecos_posts');
@@ -601,20 +553,15 @@
         if (localComments) {
           state.comments = JSON.parse(localComments);
         } else {
-          state.comments = [
-            { id: 'c1', postId: 'seed-1', authorName: 'Elena V.', text: 'Hermosa reflexión. A veces olvidamos respirar.', createdAt: new Date().toISOString() }
-          ];
+          state.comments = [];
         }
 
-        // Cargar categorías guardadas dinámicas
         state.posts.forEach(p => {
           if (p.category && !CATEGORIES.includes(p.category)) {
             CATEGORIES.push(p.category);
           }
         });
-
       } catch (e) {
-        console.warn("LocalStorage parse error, using defaults:", e);
         state.posts = [...SEED_POSTS];
       }
     }
@@ -626,12 +573,10 @@
         localStorage.setItem('ecos_is_admin', state.currentUser.isAdmin);
         localStorage.setItem('ecos_username', state.currentUser.name);
         localStorage.setItem('ecos_titles', JSON.stringify(state.customTitles));
-      } catch (e) {
-        console.warn("LocalStorage save error:", e);
-      }
+        localStorage.setItem('ecos_categories', JSON.stringify(CATEGORIES));
+      } catch (e) {}
     }
 
-    // --- FIREBASE SETUP WITH FALLBACK ---
     let db = null;
     let appId = typeof __app_id !== 'undefined' ? __app_id : 'ecos-app';
 
@@ -663,16 +608,11 @@
               renderApp();
             }
           }
-        }, (err) => console.warn("Firestore snapshot skipped:", err));
-
+        }, () => {});
       }
-    } catch (e) {
-      console.warn("Running in local offline mode:", e);
-    }
+    } catch (e) {}
 
-    // --- RENDER FUNCTIONS ---
     function renderApp() {
-      // Dark mode class
       if (state.darkMode) {
         document.documentElement.classList.add('dark');
         document.getElementById('theme-icon').className = 'fa-solid fa-sun text-lg text-amber-400';
@@ -681,13 +621,11 @@
         document.getElementById('theme-icon').className = 'fa-solid fa-moon text-lg text-warm-700';
       }
 
-      // Aplica títulos personalizados
       Object.keys(state.customTitles).forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = state.customTitles[id];
       });
 
-      // Tab visibility
       ['principal', 'comunidad', 'escribir', 'perfil'].forEach(tab => {
         const viewEl = document.getElementById(`view-${tab}`);
         const navEl = document.getElementById(`nav-${tab}`);
@@ -704,7 +642,6 @@
         }
       });
 
-      // User UI
       const userAvatar = document.getElementById('user-avatar');
       const userAvatarLarge = document.getElementById('profile-avatar-large');
       const userName = document.getElementById('user-name');
@@ -741,15 +678,12 @@
         roleDesc.textContent = "Lector y autor comunitario";
       }
 
-      // Render grids
       renderPrincipalGrid();
       renderCommunityFilters();
       renderCommunityGrid();
+      renderCategorySelectOptions();
 
-      // Render modal if active
-      if (state.activePostId) {
-        renderModalContent();
-      }
+      if (state.activePostId) renderModalContent();
     }
 
     function renderPrincipalGrid() {
@@ -759,26 +693,20 @@
       const principalPosts = state.posts.filter(p => p.section === 'principal');
 
       if (principalPosts.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full text-center py-12 text-warm-500 font-serif">
-            Aún no hay escritos en el canal principal.
-          </div>
-        `;
+        container.innerHTML = `<div class="col-span-full text-center py-12 text-warm-500 font-serif">Aún no hay escritos en el canal principal.</div>`;
         return;
       }
 
       container.innerHTML = principalPosts.map(post => `
-        <div onclick="openPostModal('${post.id}')" class="group cursor-pointer bg-warm-50 dark:bg-zinc-900 border border-warm-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+        <div onclick="openPostModal('${post.id}')" class="group cursor-pointer bg-warm-50 dark:bg-zinc-900 border border-warm-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between hover:-translate-y-1">
           <div class="space-y-3">
             <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-500">
               <span class="px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60">${escapeHtml(post.category)}</span>
               <span><i class="fa-regular fa-clock mr-1"></i>${post.readTime || 3} min</span>
             </div>
-            
             <h4 class="font-display text-2xl font-bold text-warm-900 dark:text-warm-100 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors line-clamp-2 leading-snug">
               ${escapeHtml(post.title)}
             </h4>
-            
             <p class="font-serif text-sm text-warm-700 dark:text-zinc-300 line-clamp-3 leading-relaxed">
               ${escapeHtml(post.content)}
             </p>
@@ -799,15 +727,42 @@
       const container = document.getElementById('category-filters');
       if (!container) return;
 
-      container.innerHTML = CATEGORIES.map(cat => `
-        <button onclick="filterCommunity('${cat}')" class="px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+      let html = CATEGORIES.map(cat => `
+        <div class="inline-flex items-center rounded-full transition-all ${
           state.categoryFilter === cat
             ? 'bg-warm-800 dark:bg-amber-600 text-white shadow'
             : 'bg-warm-200 dark:bg-zinc-800 text-warm-800 dark:text-zinc-300 hover:bg-warm-300'
         }">
-          ${cat}
-        </button>
+          <button onclick="filterCommunity('${cat}')" class="px-3 py-1.5 text-xs font-semibold">
+            ${cat}
+          </button>
+          ${state.currentUser.isAdmin && cat !== 'Todos' ? `
+            <button onclick="deleteCategory('${cat}')" class="pr-2.5 pl-0 text-xs font-bold text-rose-500 hover:text-rose-700" title="Eliminar categoría">
+              ×
+            </button>
+          ` : ''}
+        </div>
       `).join('');
+
+      if (state.currentUser.isAdmin) {
+        html += `
+          <button onclick="addCustomCategoryPrompt()" class="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-600 text-white hover:bg-amber-700 transition-all shadow">
+            + Nueva
+          </button>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function renderCategorySelectOptions() {
+      const select = document.getElementById('post-category');
+      if (!select) return;
+
+      const filterList = CATEGORIES.filter(c => c !== 'Todos');
+      let html = filterList.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+      html += `<option value="NEW_CUSTOM">+ Otra categoría...</option>`;
+      select.innerHTML = html;
     }
 
     function renderCommunityGrid() {
@@ -896,7 +851,6 @@
       document.getElementById('modal-content').textContent = post.content;
       document.getElementById('modal-likes-count').textContent = post.claps || 0;
 
-      // Admin options inside modal
       const adminActions = document.getElementById('modal-admin-actions');
       if (state.currentUser.isAdmin) {
         adminActions.classList.remove('hidden');
@@ -912,7 +866,6 @@
         adminActions.classList.add('hidden');
       }
 
-      // Render Comments
       renderCommentsList(post.id);
     }
 
@@ -923,9 +876,7 @@
       const postComments = state.comments.filter(c => c.postId === postId);
 
       if (postComments.length === 0) {
-        container.innerHTML = `
-          <p class="text-xs text-warm-500 italic">Aún no hay respuestas. Sé el primero en compartir tu punto de vista.</p>
-        `;
+        container.innerHTML = `<p class="text-xs text-warm-500 italic">Aún no hay respuestas. Sé el primero en compartir tu punto de vista.</p>`;
         return;
       }
 
@@ -966,12 +917,33 @@
       renderApp();
     };
 
+    window.addCustomCategoryPrompt = function() {
+      const val = prompt("Escribe el nombre de la nueva categoría:");
+      if (val && val.trim()) {
+        const cat = val.trim();
+        if (!CATEGORIES.includes(cat)) {
+          CATEGORIES.push(cat);
+          saveStateToLocal();
+          renderApp();
+          showToast(`Categoría "${cat}" añadida`, "success");
+        }
+      }
+    };
+
+    window.deleteCategory = function(cat) {
+      if (cat === 'Todos') return;
+      CATEGORIES = CATEGORIES.filter(c => c !== cat);
+      if (state.categoryFilter === cat) state.categoryFilter = 'Todos';
+      saveStateToLocal();
+      renderApp();
+      showToast(`Categoría "${cat}" eliminada`, "info");
+    };
+
     window.onSearchInput = function(e) {
       state.searchQuery = e.target.value;
       renderCommunityGrid();
     };
 
-    // FUNCIÓN PARA DESCARGAR ESCRITOS PRINCIPALES
     window.downloadPrincipalPosts = function() {
       const principalPosts = state.posts.filter(p => p.section === 'principal');
 
@@ -1005,10 +977,21 @@
       showToast("Descargando escritos principales...", "success");
     };
 
-    // EDICIÓN DINÁMICA DE TEXTOS/TÍTULOS WEB
+    window.editLogoIcon = function() {
+      if (!state.currentUser.isAdmin) return;
+      const logoEl = document.getElementById('site-logo-icon');
+      const val = prompt("Escribe la letra o inicial para el logo de la web:", logoEl.textContent.trim());
+      if (val && val.trim()) {
+        const initial = val.trim().charAt(0).toUpperCase();
+        logoEl.textContent = initial;
+        state.customTitles['site-logo-icon'] = initial;
+        saveStateToLocal();
+        showToast("Logo actualizado", "success");
+      }
+    };
+
     window.editSiteText = function(elementId) {
       if (!state.currentUser.isAdmin) return;
-
       const element = document.getElementById(elementId);
       if (!element) return;
 
@@ -1065,7 +1048,6 @@
       renderApp();
     };
 
-    // CATEGORÍAS PERSONALIZADAS EN EL FORMULARIO
     window.handleCategoryChange = function(e) {
       const customInput = document.getElementById('custom-category-input');
       if (e.target.value === 'NEW_CUSTOM') {
@@ -1238,7 +1220,6 @@
       renderApp();
     };
 
-    // --- UTILITIES ---
     function showToast(msg, type = "info") {
       const container = document.getElementById('toast-container');
       if (!container) return;
@@ -1277,14 +1258,12 @@
       }[m]));
     }
 
-    // Keyboard support for Modal
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && state.activePostId) {
         window.closePostModal();
       }
     });
 
-    // STARTUP
     loadSavedState();
     renderApp();
   </script>
