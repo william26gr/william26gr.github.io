@@ -8,7 +8,7 @@
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Google Fonts: Playfair Display, Merriweather, Inter -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
@@ -65,6 +65,21 @@
       line-height: 1.85;
       font-size: 1.05rem;
     }
+    /* Animación Ecualizador Audio */
+    @keyframes barPulse {
+      0%, 100% { height: 4px; }
+      50% { height: 16px; }
+    }
+    .eq-bar {
+      width: 3px;
+      background-color: #f59e0b;
+      border-radius: 9999px;
+      animation: barPulse 1s ease-in-out infinite;
+    }
+    .eq-bar:nth-child(1) { animation-delay: 0.0s; }
+    .eq-bar:nth-child(2) { animation-delay: 0.2s; }
+    .eq-bar:nth-child(3) { animation-delay: 0.4s; }
+    .eq-bar:nth-child(4) { animation-delay: 0.1s; }
   </style>
 </head>
 <body class="bg-warm-100 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 min-h-full flex flex-col font-sans transition-colors duration-300">
@@ -294,10 +309,10 @@
             </div>
           </div>
 
-          <!-- CAMPO PARA MÚSICA / YOUTUBE -->
+          <!-- CAMPO MÚSICA DE FONDO -->
           <div>
             <label class="block text-xs font-bold uppercase tracking-wider text-warm-700 dark:text-zinc-300 mb-2">
-              <i class="fa-solid fa-music text-amber-600 mr-1"></i> Enlace de canción (YouTube - Opcional)
+              <i class="fa-solid fa-music text-amber-600 mr-1"></i> Música de fondo (Enlace YouTube - Opcional)
             </label>
             <input type="url" id="post-song" placeholder="Ej. https://www.youtube.com/watch?v=..." class="w-full px-4 py-2.5 rounded-xl border border-warm-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-warm-600 dark:focus:ring-amber-500">
           </div>
@@ -427,11 +442,11 @@
               </div>
             </div>
 
-            <!-- BOTÓN DE REPRODUCIR MÚSICA RECOMENDADA -->
+            <!-- BOTÓN REPRODUCIR AUDIO -->
             <div id="modal-music-btn-container" class="hidden">
-              <button onclick="playSongForActivePost()" class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow">
-                <i class="fa-solid fa-music"></i>
-                <span>Escuchar música recomendada</span>
+              <button onclick="playSongForActivePost()" class="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow transform active:scale-95">
+                <i class="fa-solid fa-circle-play text-sm"></i>
+                <span>Escuchar música de ambiente</span>
               </button>
             </div>
           </div>
@@ -523,20 +538,30 @@
   </div>
 
 
-  <!-- REPRODUCTOR DE MÚSICA FLOTANTE PARA LECTURA -->
-  <div id="floating-player" class="fixed bottom-4 right-4 z-50 hidden bg-warm-900 text-white rounded-2xl shadow-2xl p-3 border border-amber-500/50 max-w-xs transition-all duration-300">
-    <div class="flex items-center justify-between mb-2">
-      <div class="flex items-center space-x-2 text-xs font-bold text-amber-400">
-        <i class="fa-solid fa-compact-disc animate-spin"></i>
-        <span>Música del escrito</span>
-      </div>
-      <button onclick="closeFloatingPlayer()" class="text-zinc-400 hover:text-white text-xs">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+  <!-- BARRA DE AUDIO FLOTANTE COMPACTA (CARGA RÁPIDA) -->
+  <div id="floating-audio-bar" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden bg-zinc-900/95 backdrop-blur-md text-white rounded-full shadow-2xl px-5 py-2.5 border border-amber-500/40 flex items-center space-x-4 transition-all duration-300">
+    
+    <!-- Animación de onda sonora -->
+    <div class="flex items-end space-x-1 h-4">
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
     </div>
-    <div class="w-full h-32 rounded-lg overflow-hidden bg-black">
-      <iframe id="floating-iframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+    <div class="flex items-center space-x-2 text-xs font-bold text-amber-400">
+      <i class="fa-solid fa-music"></i>
+      <span>Música de ambiente activa</span>
     </div>
+
+    <!-- Contenedor invisible para reproducción directa e instantánea -->
+    <div class="w-1 h-1 overflow-hidden opacity-0 pointer-events-none">
+      <iframe id="floating-iframe" class="w-1 h-1" src="" allow="autoplay"></iframe>
+    </div>
+
+    <button onclick="closeFloatingPlayer()" class="w-6 h-6 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center text-zinc-300 hover:text-white text-xs transition-colors" title="Detener música">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
   </div>
 
 
@@ -788,7 +813,7 @@
             <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-500">
               <span class="px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60">${escapeHtml(post.category)}</span>
               <div class="flex items-center space-x-2">
-                ${post.songUrl ? '<span class="text-amber-600" title="Incluye música"><i class="fa-solid fa-music"></i></span>' : ''}
+                ${post.songUrl ? '<span class="text-amber-600" title="Incluye música de ambiente"><i class="fa-solid fa-music"></i></span>' : ''}
                 <span><i class="fa-regular fa-clock mr-1"></i>${post.readTime || 3} min</span>
               </div>
             </div>
@@ -891,7 +916,7 @@
             <div class="flex items-center justify-between text-xs font-semibold text-warm-500">
               <span class="px-2 py-0.5 rounded bg-warm-200 dark:bg-zinc-800 text-warm-800 dark:text-zinc-300 uppercase">${escapeHtml(post.category)}</span>
               <div class="flex items-center space-x-2">
-                ${post.songUrl ? '<span class="text-amber-600" title="Incluye música"><i class="fa-solid fa-music"></i></span>' : ''}
+                ${post.songUrl ? '<span class="text-amber-600" title="Incluye música de ambiente"><i class="fa-solid fa-music"></i></span>' : ''}
                 <span>${post.readTime || 3} min</span>
               </div>
             </div>
@@ -942,7 +967,6 @@
       document.getElementById('modal-content').textContent = post.content;
       document.getElementById('modal-likes-count').textContent = post.claps || 0;
 
-      // BOTÓN MÚSICA RECOMENDADA
       const musicBtnContainer = document.getElementById('modal-music-btn-container');
       if (post.songUrl) {
         musicBtnContainer.classList.remove('hidden');
@@ -1000,8 +1024,8 @@
       `).join('');
     }
 
-    // --- REPRODUCTOR DE MÚSICA DE YOUTUBE ---
-    function getYoutubeEmbedUrl(url) {
+    // --- MODO AUDIO ULTRA RÁPIDO (Carga inmediata) ---
+    function getYoutubeAudioEmbedUrl(url) {
       if (!url) return '';
       let videoId = '';
       if (url.includes('v=')) {
@@ -1009,27 +1033,30 @@
       } else if (url.includes('youtu.be/')) {
         videoId = url.split('youtu.be/')[1].split('?')[0];
       }
-      return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : '';
+      // Parámetros ligeros para optimizar velocidad y ocultar elementos innecesarios
+      return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&playsinline=1` : '';
     }
 
     window.playSongForActivePost = function() {
       const post = state.posts.find(p => p.id === state.activePostId);
       if (!post || !post.songUrl) return;
 
-      const embedUrl = getYoutubeEmbedUrl(post.songUrl);
+      const embedUrl = getYoutubeAudioEmbedUrl(post.songUrl);
       if (!embedUrl) {
         showToast("Enlace de canción no válido.", "error");
         return;
       }
 
-      document.getElementById('floating-iframe').src = embedUrl;
-      document.getElementById('floating-player').classList.remove('hidden');
-      showToast("Reproduciendo música ambiental...", "success");
+      const iframe = document.getElementById('floating-iframe');
+      iframe.src = embedUrl;
+
+      document.getElementById('floating-audio-bar').classList.remove('hidden');
+      showToast("Reproduciendo audio de ambiente...", "success");
     };
 
     window.closeFloatingPlayer = function() {
       document.getElementById('floating-iframe').src = "";
-      document.getElementById('floating-player').classList.add('hidden');
+      document.getElementById('floating-audio-bar').classList.add('hidden');
     };
 
     // --- INTERACTIVE HANDLERS ---
@@ -1425,45 +1452,4 @@
       const toast = document.createElement('div');
       let bg = "bg-warm-900 text-white";
       if (type === "success") bg = "bg-emerald-700 text-white";
-      if (type === "error") bg = "bg-rose-700 text-white";
-
-      toast.className = `${bg} px-4 py-3 rounded-xl shadow-2xl text-xs font-semibold flex items-center space-x-2 transition-all transform translate-y-2 opacity-0 pointer-events-auto`;
-      toast.innerHTML = `<span>${escapeHtml(msg)}</span>`;
-
-      container.appendChild(toast);
-
-      setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'translate-y-2');
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
-
-    function formatDate(dateStr) {
-      if (!dateStr) return '';
-      const d = new Date(dateStr);
-      return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
-    }
-
-    function escapeHtml(str) {
-      if (!str) return '';
-      return str.replace(/[&<>"']/g, m => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-      }[m]));
-    }
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && state.activePostId) {
-        window.closePostModal();
-      }
-    });
-
-    loadSavedState();
-    renderApp();
-  </script>
-</body>
-</html>
+      if (type === "error") bg =
