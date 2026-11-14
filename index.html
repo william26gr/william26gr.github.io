@@ -46,7 +46,6 @@
   </script>
 
   <style>
-    /* Custom Smooth Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
     }
@@ -65,7 +64,6 @@
       line-height: 1.85;
       font-size: 1.05rem;
     }
-    /* Animación Ecualizador Audio */
     @keyframes barPulse {
       0%, 100% { height: 4px; }
       50% { height: 16px; }
@@ -83,6 +81,11 @@
   </style>
 </head>
 <body class="bg-warm-100 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 min-h-full flex flex-col font-sans transition-colors duration-300">
+
+  <!-- AVISO SI FALTAN LAS CLAVES DE FIREBASE -->
+  <div id="firebase-banner" class="hidden bg-amber-600 text-white text-xs py-2 px-4 text-center font-semibold">
+    ⚠️ Modo local activo: pega tu <code>firebaseConfig</code> en el código para sincronizar los escritos entre PC y móvil.
+  </div>
 
   <!-- TOP HEADER / NAVBAR -->
   <header class="sticky top-0 z-30 bg-warm-50/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-warm-200 dark:border-zinc-800 transition-colors duration-300">
@@ -554,7 +557,6 @@
       </button>
     </div>
     
-    <!-- IFRAME DE TAMAÑO COMPACTO QUE PERMITE REPRODUCCIÓN AUTO Y MANUAL -->
     <div class="w-60 h-32 rounded-lg overflow-hidden bg-black">
       <iframe id="floating-iframe" class="w-full h-full" src="" frameborder="0" allow="autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
@@ -594,8 +596,21 @@
   <!-- APPLICATION LOGIC & FIREBASE INTEGRATION -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // =========================================================================
+    // PEGA AQUÍ LOS DATOS DE TU PROYECTO DE FIREBASE
+    // =========================================================================
+    const firebaseConfig = {
+      apiKey: "PEGA_AQUI_TU_API_KEY",
+      authDomain: "ecos-y-reflexiones.firebaseapp.com",
+      projectId: "ecos-y-reflexiones",
+      storageBucket: "ecos-y-reflexiones.firebasestorage.app",
+      messagingSenderId: "000000000000",
+      appId: "1:000000000000:web:000000000000"
+    };
+    // =========================================================================
 
     const SEED_POSTS = [
       {
@@ -648,19 +663,10 @@
     function loadSavedState() {
       try {
         const localPosts = localStorage.getItem('ecos_posts');
-        if (localPosts) {
-          state.posts = JSON.parse(localPosts);
-        } else {
-          state.posts = [...SEED_POSTS];
-          localStorage.setItem('ecos_posts', JSON.stringify(state.posts));
-        }
+        state.posts = localPosts ? JSON.parse(localPosts) : [...SEED_POSTS];
 
         const localComments = localStorage.getItem('ecos_comments');
-        if (localComments) {
-          state.comments = JSON.parse(localComments);
-        } else {
-          state.comments = [];
-        }
+        state.comments = localComments ? JSON.parse(localComments) : [];
 
         state.posts.forEach(p => {
           if (p.category && !CATEGORIES.includes(p.category)) {
@@ -683,40 +689,82 @@
       } catch (e) {}
     }
 
+    // --- CONEXIÓN EN TIEMPO REAL CON FIREBASE ---
     let db = null;
-    let appId = typeof __app_id !== 'undefined' ? __app_id : 'ecos-app';
+    let initialPostsSyncDone = false;
 
-    try {
-      if (typeof __firebase_config !== 'undefined') {
-        const firebaseConfig = JSON.parse(__firebase_config);
+    if (firebaseConfig.apiKey === "PEGA_AQUI_TU_API_KEY") {
+      document.getElementById('firebase-banner').classList.remove('hidden');
+    } else {
+      try {
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         db = getFirestore(app);
 
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-          signInWithCustomToken(auth, __initial_auth_token).catch(() => signInAnonymously(auth));
-        } else {
-          signInAnonymously(auth).catch(() => {});
-        }
+        signInAnonymously(auth).catch((err) => {
+          console.warn("Aviso Auth Anónimo:", err.message);
+        });
 
         onAuthStateChanged(auth, (user) => {
           if (user) state.currentUser.uid = user.uid;
         });
 
-        const postsCol = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
-        onSnapshot(postsCol, (snapshot) => {
-          if (!snapshot.empty) {
-            const remotePosts = [];
-            snapshot.forEach(docSnap => remotePosts.push({ id: docSnap.id, ...docSnap.data() }));
-            if (remotePosts.length > 0) {
-              state.posts = remotePosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-              saveStateToLocal();
-              renderApp();
-            }
+        // 1. Escuchar escritos en tiempo real
+        onSnapshot(collection(db, 'posts'), (snapshot) => {
+          const remotePosts = [];
+          snapshot.forEach(docSnap => remotePosts.push({ id: docSnap.id, ...docSnap.data() }));
+
+          if (remotePosts.length > 0) {
+            state.posts = remotePosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            state.posts.forEach(p => {
+              if (p.category && !CATEGORIES.includes(p.category)) CATEGORIES.push(p.category);
+            });
+            saveStateToLocal();
+            renderApp();
+          } else if (!initialPostsSyncDone) {
+            // Si la base de datos está vacía por primera vez, subimos los 2 escritos iniciales
+            initialPostsSyncDone = true;
+            SEED_POSTS.forEach(seed => {
+              setDoc(doc(db, 'posts', seed.id), seed).catch(() => {});
+            });
           }
-        }, () => {});
+        }, (err) => {
+          console.error("Error leyendo escritos de Firebase:", err);
+        });
+
+        // 2. Escuchar comentarios en tiempo real
+        onSnapshot(collection(db, 'comments'), (snapshot) => {
+          const remoteComments = [];
+          snapshot.forEach(docSnap => remoteComments.push({ id: docSnap.id, ...docSnap.data() }));
+          state.comments = remoteComments.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+          saveStateToLocal();
+          if (state.activePostId) renderCommentsList(state.activePostId);
+        });
+
+        // 3. Escuchar títulos editables y categorías en tiempo real
+        onSnapshot(doc(db, 'settings', 'siteConfig'), (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.customTitles) state.customTitles = data.customTitles;
+            if (Array.isArray(data.categories) && data.categories.length > 0) {
+              CATEGORIES = data.categories;
+            }
+            saveStateToLocal();
+            renderApp();
+          }
+        });
+      } catch (e) {
+        console.error("Error inicializando Firebase:", e);
       }
-    } catch (e) {}
+    }
+
+    function syncSiteSettingsToCloud() {
+      if (!db) return;
+      setDoc(doc(db, 'settings', 'siteConfig'), {
+        customTitles: state.customTitles,
+        categories: CATEGORIES
+      }, { merge: true }).catch(() => {});
+    }
 
     function renderApp() {
       if (state.darkMode) {
@@ -842,11 +890,11 @@
             ? 'bg-warm-800 dark:bg-amber-600 text-white shadow'
             : 'bg-warm-200 dark:bg-zinc-800 text-warm-800 dark:text-zinc-300 hover:bg-warm-300'
         }">
-          <button onclick="filterCommunity('${cat}')" class="px-3 py-1.5 text-xs font-semibold">
-            ${cat}
+          <button onclick="filterCommunity('${escapeHtml(cat)}')" class="px-3 py-1.5 text-xs font-semibold">
+            ${escapeHtml(cat)}
           </button>
           ${state.currentUser.isAdmin && cat !== 'Todos' ? `
-            <button onclick="deleteCategory('${cat}')" class="pr-2.5 pl-0 text-xs font-bold text-rose-500 hover:text-rose-700" title="Eliminar categoría">
+            <button onclick="deleteCategory('${escapeHtml(cat)}')" class="pr-2.5 pl-0 text-xs font-bold text-rose-500 hover:text-rose-700" title="Eliminar categoría">
               ×
             </button>
           ` : ''}
@@ -1028,6 +1076,8 @@
         videoId = url.split('v=')[1].split('&')[0];
       } else if (url.includes('youtu.be/')) {
         videoId = url.split('youtu.be/')[1].split('?')[0];
+      } else if (url.includes('shorts/')) {
+        videoId = url.split('shorts/')[1].split('?')[0];
       }
       return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1` : '';
     }
@@ -1080,6 +1130,7 @@
         if (!CATEGORIES.includes(cat)) {
           CATEGORIES.push(cat);
           saveStateToLocal();
+          syncSiteSettingsToCloud();
           renderApp();
           showToast(`Categoría "${cat}" añadida`, "success");
         }
@@ -1091,6 +1142,7 @@
       CATEGORIES = CATEGORIES.filter(c => c !== cat);
       if (state.categoryFilter === cat) state.categoryFilter = 'Todos';
       saveStateToLocal();
+      syncSiteSettingsToCloud();
       renderApp();
       showToast(`Categoría "${cat}" eliminada`, "info");
     };
@@ -1139,16 +1191,15 @@
 
       if (category && !CATEGORIES.includes(category)) {
         CATEGORIES.push(category);
+        syncSiteSettingsToCloud();
       }
 
       saveStateToLocal();
 
       if (db) {
-        try {
-          updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', post.id), {
-            title, category, readTime, songUrl, content
-          }).catch(() => {});
-        } catch (e) {}
+        updateDoc(doc(db, 'posts', post.id), {
+          title, category, readTime, songUrl, content
+        }).catch(() => {});
       }
 
       closeEditPostModal();
@@ -1204,6 +1255,7 @@
         logoEl.textContent = initial;
         state.customTitles['site-logo-icon'] = initial;
         saveStateToLocal();
+        syncSiteSettingsToCloud();
         showToast("Logo actualizado", "success");
       }
     };
@@ -1220,6 +1272,7 @@
         element.textContent = newVal.trim();
         state.customTitles[elementId] = newVal.trim();
         saveStateToLocal();
+        syncSiteSettingsToCloud();
         showToast("Texto actualizado correctamente.", "success");
       }
     };
@@ -1296,6 +1349,7 @@
         category = customCategory;
         if (!CATEGORIES.includes(category)) {
           CATEGORIES.push(category);
+          syncSiteSettingsToCloud();
         }
       }
 
@@ -1311,9 +1365,10 @@
       }
 
       const authorName = authorInput || state.currentUser.name || 'Anónimo';
+      const postId = 'post-' + Date.now();
 
       const newPost = {
-        id: 'post-' + Date.now(),
+        id: postId,
         title,
         category,
         readTime,
@@ -1329,9 +1384,9 @@
       saveStateToLocal();
 
       if (db) {
-        try {
-          addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), newPost).catch(() => {});
-        } catch (e) {}
+        setDoc(doc(db, 'posts', postId), newPost).catch((err) => {
+          console.error("Error guardando en Firebase:", err);
+        });
       }
 
       document.getElementById('post-form').reset();
@@ -1367,9 +1422,7 @@
       renderApp();
 
       if (db) {
-        try {
-          updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', post.id), { claps: post.claps }).catch(() => {});
-        } catch (e) {}
+        updateDoc(doc(db, 'posts', post.id), { claps: increment(1) }).catch(() => {});
       }
     };
 
@@ -1384,8 +1437,9 @@
 
       if (!text) return;
 
+      const commentId = 'comm-' + Date.now();
       const newComment = {
-        id: 'comm-' + Date.now(),
+        id: commentId,
         postId: state.activePostId,
         authorName: author,
         text,
@@ -1397,9 +1451,7 @@
       textInput.value = '';
 
       if (db) {
-        try {
-          addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'comments'), newComment).catch(() => {});
-        } catch (e) {}
+        setDoc(doc(db, 'comments', commentId), newComment).catch(() => {});
       }
 
       renderCommentsList(state.activePostId);
@@ -1409,6 +1461,9 @@
     window.deleteComment = function(commentId) {
       state.comments = state.comments.filter(c => c.id !== commentId);
       saveStateToLocal();
+      if (db) {
+        deleteDoc(doc(db, 'comments', commentId)).catch(() => {});
+      }
       if (state.activePostId) renderCommentsList(state.activePostId);
       showToast("Comentario eliminado", "info");
     };
@@ -1420,6 +1475,11 @@
 
       post.section = post.section === 'principal' ? 'comunidad' : 'principal';
       saveStateToLocal();
+
+      if (db) {
+        updateDoc(doc(db, 'posts', post.id), { section: post.section }).catch(() => {});
+      }
+
       showToast(`Escrito movido a: ${post.section === 'principal' ? 'Canal Principal' : 'Comunidad'}`, "success");
       
       if (state.activePostId === postId) {
@@ -1432,6 +1492,11 @@
       if (!state.currentUser.isAdmin) return;
       state.posts = state.posts.filter(p => p.id !== postId);
       saveStateToLocal();
+
+      if (db) {
+        deleteDoc(doc(db, 'posts', postId)).catch(() => {});
+      }
+
       showToast("Escrito eliminado", "info");
 
       if (state.activePostId === postId) {
